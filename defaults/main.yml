@@ -20,9 +20,9 @@ mounts_extras: []
 mounts_default:
   - "/:/hostroot/"
   - "/var/run/docker.sock:/var/run/docker.sock"
-  - "{{ (con_disk_path == None) | ternary('', con_disk_path + ':/vol/') }}"
-  - "{{ (con_metrics_disk_path == None) | ternary('', con_metrics_disk_path + ':/vol_metrics/') }}"
-  - "{{ (con_logs_disk_path == None) | ternary('', con_logs_disk_path + ':/vol_logs/') }}"
+  - "{{ (con_disk_path == None) | ternary('', con_disk_path ~ ':/vol/') }}"
+  - "{{ (con_metrics_disk_path == None) | ternary('', con_metrics_disk_path ~ ':/vol_metrics/') }}"
+  - "{{ (con_logs_disk_path == None) | ternary('', con_logs_disk_path ~ ':/vol_logs/') }}"
 mounts_all: "{{ mounts_extras + mounts_default}}"
 mounts_string: "{% for mount_var in mounts_all|reject('match', '^$') %} -v {{ mount_var }}{% endfor %}"
 
