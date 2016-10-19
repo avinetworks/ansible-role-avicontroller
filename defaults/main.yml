@@ -35,7 +35,7 @@ env_variables_default:
   - "{{ (con_disk_gb == None) | ternary('', 'DISK_GB=' + con_disk_gb|string) }}"
   - "{{ (con_metrics_disk_gb == None) | ternary('', 'METRICS_DISK_GB=' + con_metrics_disk_gb|string) }}"
   - "{{ (con_logs_disk_gb == None) | ternary('', 'LOGS_DISK_GB=' + con_logs_disk_gb|string) }}"
-env_variables_all: "{{ env_variables_extras + env_variables_main }}"
+env_variables_all: "{{ env_variables_extras + env_variables_default }}"
 env_variables_string: "{% for env_var in env_variables_all|reject('match', '^$') %} -e {{ env_var }}{% endfor %}"
 
 port:
