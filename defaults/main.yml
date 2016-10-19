@@ -1,0 +1,55 @@
+---
+# defaults file for avinetworks.avicontroller
+version: latest
+
+con_cores: "{{ ansible_processor_count }}"
+con_memory_gb: "{{ ansible_memtotal_mb // 1024 }}"
+destination_disk: "{{ ansible_mounts|sort(reverse=True, attribute='size_total')|map(attribute='mount')|first}}"
+con_disk_path: "{{ destination_disk }}opt/avi/controller/data"
+con_disk_gb: 30
+con_metrics_disk_path: ~
+con_metrics_disk_gb: ~
+con_logs_disk_path: ~
+con_logs_disk_gb: ~
+controller_ip: ~
+master_ctl_ip: ~
+dev_name: ~
+setup_json: ~
+
+mounts_extras: []
+mounts_default:
+  - "/:/hostroot/"
+  - "/var/run/docker.sock:/var/run/docker.sock"
+  - "{{ (con_disk_path == None) | ternary(None, con_disk_path + ':/vol/'|string) }}"
+  - "{{ (con_metrics_disk_path == None) | ternary(None, con_metrics_disk_path + ':/vol_metrics/'|string) }}"
+  - "{{ (con_logs_disk_path == None) | ternary(None, con_logs_disk_path + ':/vol_logs/'|string) }}"
+mounts_all: "{{ mounts_extras + mounts_default}}"
+mounts_string: "{% for mount_var in mounts_all|reject('match', '^$') %} -v {{ mount_var }}{% endfor %}"
+
+env_variables_extras: []
+env_variables_default:
+  - "CONTAINER_NAME=avicontroller"
+  - "MANAGEMENT_IP={{ controller_ip | string}}"
+  - "NUM_CPU={{ con_cores }}"
+  - "NUM_MEMG={{ con_memory_gb }}"
+  - "{{ (con_disk_gb == None) | ternary(None, 'DISK_GB=' + con_disk_gb|string) }}"
+  - "{{ (con_metrics_disk_gb == None) | ternary(None, 'METRICS_DISK_GB=' + con_metrics_disk_gb|string) }}"
+  - "{{ (con_logs_disk_gb == None) | ternary(None, 'LOGS_DISK_GB=' + con_logs_disk_gb|string) }}"
+env_variables_all: "{{ env_variables_extras + env_variables_main }}"
+env_variables_string: "{% for env_var in env_variables_all|reject('match', '^$') %} -e {{ env_var }}{% endfor %}"
+
+port:
+  portal_http: 80
+  portal_https: 443
+  sec_channel_neg: 8443
+  controller_ssh: 5098
+  serviceengine_ssh: 5099
+  controller_cli: 5054
+  snmp: 161
+ports_list: >
+  -p {{ port.controller_ssh }}:5098
+  -p {{ port.portal_http }}:80
+  -p {{ port.portal_https }}:443
+  -p {{ port.sec_channel_neg }}:8443
+  -p {{ port.controller_cli }}:5054
+  -p {{ port.snmp }}:161"

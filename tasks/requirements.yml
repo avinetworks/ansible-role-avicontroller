@@ -1,0 +1,90 @@
+---
+# check system against minimum requirements
+
+# - name: Discover largest Disk
+#   shell: df -lT | tail -n +2 | egrep -v "tmpfs" | sort -k 5,5 -nr | awk  '{print $NF}' | head -1
+#   register: get_largest_disk
+#   when: destination_disk == ''
+- name: Test for Required Variables
+  fail: msg="Variable '{{ item }}' is not defined"
+  when: item == None
+  with_items:
+    - controller_ip
+    - master_ctl_ip
+
+- name: Install python-netaddr
+  package: name=python-netaddr
+  delegate_to: localhost
+
+- name: Verify the IP Address is Valid.
+  assert:
+    that:
+      - "controller_ip | ipaddr"
+
+- name: Get the management device name
+  shell: "netstat -ie | grep -B1 {{ controller_ip }} | head -n1 | awk '{print $1}'"
+  register: mgmt_device
+  changed_when: false
+  when: dev_name == None
+
+- name: Set the management device name
+  set_fact:
+    dev_name: "{{ mgmt_device.stdout }}"
+  when: mgmt_device
+
+- name: Controller needs more than 4 cores.
+  assert:
+    that:
+      - "ansible_processor_cores >= 4"
+      - "con_cores <= ansible_processor_cores"
+
+- name: Set the ansible_memtotal_gb var
+  set_fact:
+    ansible_memtotal_gb: "{{ ansible_memtotal_mb // 1024 }}"
+
+- name: Controller needs between 12GB and {{ ansible_memtotal_mb // 1024 }}GB memory.
+  assert:
+    that:
+      - "ansible_memtotal_mb >= 12288"
+      - "con_memory_gb <= ansible_memtotal_gb"
+
+- name: Create directories for controller
+  file: path="{{ item }}" state=directory mode=0755
+  when: item != None
+  with_items:
+    - "{{ con_disk_path }}"
+    - "{{ con_metrics_disk_path }}"
+    - "{{ con_logs_disk_path }}"
+
+- block:
+    - name: Get disk space on controller disk path
+      shell: "df {{ con_disk_path }} -BG | grep -iv Used | awk '{print $4}' | sed s/G//g"
+      register: con_disk_path_space
+    - name: Check if there is enough space for controller disk path
+      assert:
+        that:
+          - con_disk_gb != None
+          - con_disk_path_space.stdout > con_disk_gb
+  when: con_disk_path != None
+
+- block:
+    - name: Get disk space on controller metrics disk path
+      shell: "df {{ con_metrics_disk_path }} -BG | grep -iv Used | awk '{print $4}' | sed s/G//g"
+      register: con_metrics_disk_path_space
+    - name: Check if there is enough space for controller metrics disk path
+      assert:
+        that:
+          - con_metrics_disk_gb != None
+          - con_metrics_disk_path_space.stdout > con_metrics_disk_gb
+  when: con_metrics_disk_path != None
+
+- block:
+    - name: Get disk space on controller logs disk path
+      shell: "df {{ con_logs_disk_path }} -BG | grep -iv Used | awk '{print $4}' | sed s/G//g"
+      register: con_logs_disk_path_space
+    - name: Check if there is enough space for controller logs disk path
+      assert:
+        that:
+          - con_logs_disk_gb != None
+          - con_logs_disk_path_space.stdout > con_logs_disk_gb
+  when: con_logs_disk_path != None

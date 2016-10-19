@@ -1,0 +1,35 @@
+---
+- name: Check existing Docker container is running
+  shell: docker ps -a | grep avinetworks/controller | grep -v CONTAINER | wc -l
+  ignore_errors: true
+  register: con_docker_container_exists
+
+- debug: var=con_docker_container_exists
+
+- block:
+    - name: Stop existing Avi Controller Docker container
+      shell: docker stop `docker ps -a | grep avinetworks/controller | grep -v CONTAINER | awk '{printf "%s\\n",$1}'`
+    - name: Remove existing Avi Controller Docker container
+      shell: docker rm -f `docker ps -a | grep avinetworks/controller | grep -v CONTAINER | awk '{printf "%s\\n",$1}'`
+  when: con_docker_container_exists.stdout != '0'
+
+- name: Check for existing Docker images
+  shell: docker images | grep avinetworks/controller | wc -l
+  ignore_errors: true
+  register: con_docker_image_exists
+
+- name: Removing existing Avi Controller Docker images
+  shell: docker rmi -f `docker images | grep avinetworks/controller | grep -v REPOSITORY | awk '{printf "%s\\n",$3}'`
+  when: con_docker_image_exists.stdout != '0'
+
+- name: Load the {{ version }} Avi Controller image from Docker Hub
+  shell: "docker pull avinetworks/controller:{{ version }}"
+  register: con_image
+
+# - name: Load the latest Avi Controller image from Docker Hub
+#   docker_image:
+#     name: avinetworks/controller
+#     tag: "{{ version }}"
+#   register: con_image
+
+- debug: var=con_image
