@@ -52,4 +52,4 @@ ports_list: >
   -p {{ port.portal_https }}:443
   -p {{ port.sec_channel_neg }}:8443
   -p {{ port.controller_cli }}:5054
-  -p {{ port.snmp }}:161"
+  -p {{ port.snmp }}:161
