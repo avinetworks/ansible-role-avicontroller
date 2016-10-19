@@ -18,6 +18,8 @@
   ignore_errors: true
   register: con_docker_image_exists
 
+- debug: var=con_docker_image_exists
+
 - name: Removing existing Avi Controller Docker images
   shell: docker rmi -f `docker images | grep avinetworks/controller | grep -v REPOSITORY | awk '{printf "%s\\n",$3}'`
   when: con_docker_image_exists.stdout != '0'
