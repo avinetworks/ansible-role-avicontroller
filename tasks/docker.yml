@@ -22,6 +22,7 @@
 
 - name: Removing existing Avi Controller Docker images
   shell: docker rmi -f `docker images | grep avinetworks/controller | grep -v REPOSITORY | awk '{printf "%s\\n",$3}'`
+  ignore_errors: true
   when: con_docker_image_exists.stdout != '0'
 
 - name: Load the {{ version }} Avi Controller image from Docker Hub
