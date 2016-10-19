@@ -54,4 +54,4 @@ ports_list:
   - "{{ ports.sec_channel_neg }}:8443"
   - "{{ ports.controller_cli }}:5054"
   - "{{ ports.snmp }}:161"
-port_list_string: "{% for port in ports_list|reject('match', '^$') %} -p {{ port }}{% endfor %}"
+ports_list_string: "{% for port in ports_list|reject('match', '^$') %} -p {{ port }}{% endfor %}"
