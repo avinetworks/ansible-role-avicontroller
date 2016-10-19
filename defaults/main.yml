@@ -15,6 +15,15 @@ controller_ip: ~
 master_ctl_ip: ~
 dev_name: ~
 setup_json: ~
+ports:
+  portal_http: 80
+  portal_https: 443
+  sec_channel_neg: 8443
+  controller_ssh: 5098
+  serviceengine_ssh: 5099
+  controller_cli: 5054
+  snmp: 161
+
 
 mounts_extras: []
 mounts_default:
@@ -38,18 +47,11 @@ env_variables_default:
 env_variables_all: "{{ env_variables_extras + env_variables_default }}"
 env_variables_string: "{% for env_var in env_variables_all|reject('match', '^$') %} -e {{ env_var }}{% endfor %}"
 
-port:
-  portal_http: 80
-  portal_https: 443
-  sec_channel_neg: 8443
-  controller_ssh: 5098
-  serviceengine_ssh: 5099
-  controller_cli: 5054
-  snmp: 161
-ports_list: >
-  -p {{ port.controller_ssh }}:5098
-  -p {{ port.portal_http }}:80
-  -p {{ port.portal_https }}:443
-  -p {{ port.sec_channel_neg }}:8443
-  -p {{ port.controller_cli }}:5054
-  -p {{ port.snmp }}:161
+ports_list:
+  - "{{ ports.controller_ssh }}:5098"
+  - "{{ ports.portal_http }}:80"
+  - "{{ ports.portal_https }}:443"
+  - "{{ ports.sec_channel_neg }}:8443"
+  - "{{ ports.controller_cli }}:5054"
+  - "{{ ports.snmp }}:161"
+port_list_string: "{% for port in ports_list|reject('match', '^$') %} -p {{ port }}{% endfor %}"
