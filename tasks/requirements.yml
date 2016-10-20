@@ -1,11 +1,6 @@
 ---
 # check system against minimum requirements
 
-# - name: Discover largest Disk
-#   shell: df -lT | tail -n +2 | egrep -v "tmpfs" | sort -k 5,5 -nr | awk  '{print $NF}' | head -1
-#   register: get_largest_disk
-#   when: destination_disk == None
-
 - name: Check if Controller IP is defined.
   fail: msg="Variable controller_ip is not defined"
   when: controller_ip == None
@@ -33,9 +28,7 @@
   failed_when: false
 
 - name: Verify the IP Address is Valid.
-  assert:
-    that:
-      - "controller_ip | ipaddr"
+  assert: { that: "controller_ip | ipaddr" }
 
 - name: Get the management device name
   shell: "netstat -ie | grep -B1 {{ controller_ip }} | head -n1 | awk -F ':' '{print $1}'"
