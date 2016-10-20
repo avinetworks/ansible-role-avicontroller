@@ -20,40 +20,59 @@ master_ctl_ip: ''
 ### Optional Variables
 ```
 version: latest
-con_image:
-con_cores: 4
-con_memory_gb: 12
-destination_disk: # This is automatically your largest disk unless otherwise specified.
+
+con_cores: "{{ ansible_processor_count }}"
+con_memory_gb: "{{ ansible_memtotal_mb // 1024 }}"
+destination_disk: "{{ ansible_mounts|sort(reverse=True, attribute='size_total')|map(attribute='mount')|first}}"
 con_disk_path: "{{ destination_disk }}opt/avi/controller/data"
-con_disk_gb: 64
+con_disk_gb: 30
 con_metrics_disk_path: ~
 con_metrics_disk_gb: ~
 con_logs_disk_path: ~
 con_logs_disk_gb: ~
 controller_ip: ~
-devname: ~
 master_ctl_ip: ~
+dev_name: ~
 setup_json: ~
-mounts_extras: []
-env_variables_extras: []
+ports:
+  portal_http: 80
+  portal_https: 443
+  sec_channel_neg: 8443
+  controller_ssh: 5098
+  serviceengine_ssh: 5099
+  controller_cli: 5054
+  snmp: 161
 
-setup_json: ''
+# Use these to add parameters manually if desired. These do not overwrite the defaults.
+mounts_extras: [] # Do NOT need to include -v in each string
+env_variables_extras: [] # Do NOT need to include -e in each string
+ports_list_extras: [] # Do NOT need to include -p in each string
 ```
 
 ### Parameter Override Variables
-However, you are able to provide these parameters another way. Using the following variables. This will allow the user to customize all values.
+However, you are able to provide these parameters another way. Using the following variables. This will allow the user to customize all values.  
 **!!!BEWARE: USING THIS WILL ERASE DEFAULTS - USE WITH CAUTION!!!**
 
 ```
 env_variables_all:
   - "CONTAINER_NAME=avicontroller"
-  - "MANAGEMENT_IP={{ controller_ip}}"
-  - "NUM_CPU=4"
-  - "NUM_MEMG=12"
+  - "MANAGEMENT_IP={{ controller_ip | string}}"
+  - "NUM_CPU={{ con_cores }}"
+  - "NUM_MEMG={{ con_memory_gb }}"
+  - "DISK_GB={{ con_disk_gb }}"
 
 mounts_all:
-  - /opt/avi/controller/data:/vol/
+  - "/:/hostroot/"
+  - "/var/run/docker.sock:/var/run/docker.sock"
+  - "{{ con_disk_path }}:/vol/"
 
+ports_list_all:
+  - "5098:5098"
+  - "80:80"
+  - "443:443"
+  - "8443:8443"
+  - "5054:5054"
+  - "161:161"
 ```
 
 ## Dependencies
