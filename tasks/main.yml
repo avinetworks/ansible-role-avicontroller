@@ -7,7 +7,7 @@
 
 - name: Check for existing avicontroller service
   stat:
-    path: {{ item }}
+    path: "{{ item }}"
   register: service_installed
   with_items:
     - /etc/systemd/system/avicontroller.service
