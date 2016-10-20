@@ -33,7 +33,7 @@ echo "Starting avicontroller"
 
 stop() {
 echo "Stopping avicontroller"
-/usr/bin/docker stop  avicontroller
+/usr/bin/docker stop avicontroller
 /usr/bin/docker kill avicontroller
 /usr/bin/docker rm -f avicontroller
 /sbin/ifconfig {{ dev_name }}:1 down

@@ -5,12 +5,21 @@
   tags:
     - requirements
 
-- name: Stop Avi Controller service
+- name: Check for existing avicontroller service
+  stat:
+    path: {{ item }}
+  register: service_installed
+  with_items:
+    - /etc/systemd/system/avicontroller.service
+    - /etc/init.d/avicontroller
+
+- name: Stop avicontroller service
   service:
     name: avicontroller
     enabled: no
     state: stopped
-  ignore_errors: true
+  when: "{{ item.stat.exists == true }}"
+  with_items: "{{ service_installed.results }}"
 
 - name: Perform Docker tasks
   include: docker.yml
