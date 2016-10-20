@@ -15,9 +15,7 @@
   when: master_ctl_ip == None
 
 - name: Install python-netaddr on Ansible host
-  package: name=python-netaddr
-  delegate_to: localhost
-  delegate_facts: True
+  local_action: package name=python-netaddr
 
 - name: Verify the IP Address is Valid.
   assert:
