@@ -18,8 +18,6 @@
   package: name=python-netaddr
   delegate_to: localhost
   delegate_facts: true
-  ignore_errors: true
-  failed_when: false
 
 - name: Verify the IP Address is Valid.
   assert:

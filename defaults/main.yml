@@ -55,5 +55,5 @@ ports_list_default:
   - "{{ ports.sec_channel_neg }}:8443"
   - "{{ ports.controller_cli }}:5054"
   - "{{ ports.snmp }}:161"
-ports_list_all: "{{ env_variables_extras + env_variables_default }}"
+ports_list_all: "{{ ports_list_extras + ports_list_default }}"
 ports_list_string: "{% for port in ports_list_all|reject('match', '^$') %} -p {{ port }}{% endfor %}"
