@@ -17,7 +17,7 @@
 - name: Install python-netaddr on Ansible host
   package: name=python-netaddr
   delegate_to: localhost
-  delegate_facts: true
+  delegate_facts: True
 
 - name: Verify the IP Address is Valid.
   assert:
