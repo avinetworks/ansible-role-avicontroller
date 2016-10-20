@@ -61,6 +61,7 @@
 - block:
     - name: Get disk space on controller disk path
       shell: "df {{ con_disk_path }} -BG | grep -iv Used | awk '{print $4}' | sed s/G//g"
+      changed_when: false
       register: con_disk_path_space
     - name: Check if there is enough space for controller disk path
       assert:
