@@ -14,9 +14,16 @@
   fail: msg="Variable master_ctl_ip is not defined"
   when: master_ctl_ip == None
 
-- name: Install python-netaddr on Ansible host.
-  package: name=python-netaddr
+- block:
+    - name: Install python-netaddr on Ansible host | yum
+      yum: name=python-netaddr
+    - name: Install python-netaddr on Ansible host | apt
+      apt: name=python-netaddr
+    - name: Install python-netaddr on Ansible host | dnf
+      dnf: name=python-netaddr
   delegate_to: localhost
+  ignore_errors: true
+  failed_when: false
 
 - name: Verify the IP Address is Valid.
   assert:
