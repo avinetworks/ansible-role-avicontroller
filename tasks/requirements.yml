@@ -4,15 +4,17 @@
 # - name: Discover largest Disk
 #   shell: df -lT | tail -n +2 | egrep -v "tmpfs" | sort -k 5,5 -nr | awk  '{print $NF}' | head -1
 #   register: get_largest_disk
-#   when: destination_disk == ''
-- name: Test for Required Variables
-  fail: msg="Variable '{{ item }}' is not defined"
-  when: item == None
-  with_items:
-    - controller_ip
-    - master_ctl_ip
+#   when: destination_disk == None
 
-- name: Install python-netaddr
+- name: Check if Controller IP is defined.
+  fail: msg="Variable controller_ip is not defined"
+  when: controller_ip == None
+
+- name: Check if Master Controller IP is defined.
+  fail: msg="Variable master_ctl_ip is not defined"
+  when: master_ctl_ip == None
+
+- name: Install python-netaddr on Ansible host.
   package: name=python-netaddr
   delegate_to: localhost
 
@@ -22,7 +24,7 @@
       - "controller_ip | ipaddr"
 
 - name: Get the management device name
-  shell: "netstat -ie | grep -B1 {{ controller_ip }} | head -n1 | awk '{print $1}'"
+  shell: "netstat -ie | grep -B1 {{ controller_ip }} | head -n1 | awk -F ':' '{print $1}'"
   register: mgmt_device
   changed_when: false
   when: dev_name == None
