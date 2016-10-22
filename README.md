@@ -12,12 +12,14 @@ Possible variables are listed below:
 
 ### Required Variables
 ```
+
 controller_ip: ''
 master_ctl_ip: ''
 ```
 
 ### Optional Variables
 ```
+
 version: latest
 
 con_cores: "{{ ansible_processor_count }}"
@@ -53,6 +55,7 @@ However, you are able to provide these parameters another way. Using the followi
 **!!!BEWARE: USING THIS WILL ERASE DEFAULTS - USE WITH CAUTION!!!**
 
 ```
+
 env_variables_all:
   - "CONTAINER_NAME=avicontroller"
   - "MANAGEMENT_IP={{ controller_ip | string}}"
@@ -86,6 +89,7 @@ avinetworks.docker
 **It is recommended you adjust these parameters based on the implementation desired.**
 
 ```
+
 - hosts: servers
   roles:
     - role: avinetworks.avicontroller
