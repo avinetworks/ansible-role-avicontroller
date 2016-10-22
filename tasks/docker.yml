@@ -27,4 +27,4 @@
   when: con_docker_image_exists.rc == 0
 
 - name: Load the {{ version }} Avi Controller image from Docker Hub
-  shell: "docker pull avinetworks/controller:{{ version }}"
+  shell: "docker pull {{ con_image }}"

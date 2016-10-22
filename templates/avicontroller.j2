@@ -28,7 +28,7 @@ prestart() {
 start() {
 prestart
 echo "Starting avicontroller"
-/usr/bin/docker run --name=avicontroller {{ ports_list_string }} -d --privileged {{ env_variables_string }} {{ mounts_string }} avinetworks/controller:{{ version }}
+/usr/bin/docker run --name=avicontroller {{ ports_list_string }} -d --privileged {{ env_variables_string }} {{ mounts_string }} {{ con_image }}
 }
 
 stop() {
