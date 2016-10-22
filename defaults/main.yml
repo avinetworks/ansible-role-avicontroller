@@ -2,6 +2,7 @@
 # defaults file for avinetworks.avicontroller
 version: latest
 
+con_image: "avinetworks/controller:{{ version }}"
 con_cores: "{{ ansible_processor_count }}"
 con_memory_gb: "{{ ansible_memtotal_mb // 1024 }}"
 destination_disk: "{{ ansible_mounts|sort(reverse=True, attribute='size_total')|map(attribute='mount')|first}}"
