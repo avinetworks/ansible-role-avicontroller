@@ -1,10 +1,10 @@
-- name: Deploy the Avi Controller service | init.d
+- name: Avi Controller | Deploy the Avi Controller service | init.d
   template:
     src: avicontroller.j2
     dest: /etc/init.d/avicontroller
     mode: 0744
 
-- name: Deploying rc links
+- name: Avi Controller | Deploying rc links
   file:
     src: /etc/init.d/avicontroller
     dest: "{{ item }}"

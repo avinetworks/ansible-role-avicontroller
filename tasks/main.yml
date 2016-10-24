@@ -1,11 +1,11 @@
 ---
 # tasks file for avinetworks.avicontroller
-- name: Check minimum requirements
+- name: Avi Controller | Check minimum requirements
   include: requirements.yml
   tags:
     - requirements
 
-- name: Check for existing avicontroller service
+- name: Avi Controller | Check for existing avicontroller service
   stat:
     path: "{{ item }}"
   register: service_installed
@@ -13,7 +13,7 @@
     - /etc/systemd/system/avicontroller.service
     - /etc/init.d/avicontroller
 
-- name: Stop avicontroller service
+- name: Avi Controller | Stop avicontroller service
   service:
     name: avicontroller
     enabled: no
@@ -21,24 +21,24 @@
   when: "{{ item.stat.exists == true }}"
   with_items: "{{ service_installed.results }}"
 
-- name: Perform Docker tasks
+- name: Avi Controller | Perform Docker tasks
   include: docker.yml
 
-- name: Install the Avi Controller systemd service
+- name: Avi Controller | Install the Avi Controller systemd service
   include: services/systemd.yml
   when: ansible_service_mgr == 'systemd'
 
-- name: Install the Avi Controller init.d service
+- name: Avi Controller | Install the Avi Controller init.d service
   include: services/initd.yml
   when: ansible_service_mgr != 'systemd'
 
-- name: Copy setup.json to controller
+- name: Avi Controller | Copy setup.json to controller
   copy:
     src: "{{ setup_json }}"
     dest: "{{ con_disk_path }}/setup.json"
   when: setup_json != None
 
-- name: Start Avi Controller service
+- name: Avi Controller | Start Avi Controller service
   service:
     name: avicontroller
     enabled: yes
