@@ -1,6 +1,0 @@
----
-# handlers file for avinetworks.avicontroller
-- name: stop avicontroller
-  service: name=avicontroller state=stopped
-- name: start avicontroller
-  service: name=avicontroller state=started

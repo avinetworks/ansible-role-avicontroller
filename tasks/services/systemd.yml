@@ -1,5 +1,5 @@
 ---
-- name: Deploy the Avi Controller service | systemd
+- name: Avi Controller | Deploy the Avi Controller service | systemd
   template:
     src: avicontroller.service.j2
     dest: /etc/systemd/system/avicontroller.service

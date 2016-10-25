@@ -58,3 +58,5 @@ ports_list_default:
   - "{{ ports.snmp }}:161"
 ports_list_all: "{{ ports_list_extras + ports_list_default }}"
 ports_list_string: "{% for port in ports_list_all|reject('match', '^$') %} -p {{ port }}{% endfor %}"
+
+docker_run_params: "--name=avicontroller {{ ports_list_string }} -d --privileged {{ env_variables_string }} {{ mounts_string }} {{ con_image }}"

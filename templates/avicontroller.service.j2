@@ -9,7 +9,7 @@ Restart=always
 
 ExecStartPre=-/usr/bin/docker kill avicontroller
 ExecStartPre=-/usr/bin/docker rm -f avicontroller
-ExecStartPre=/usr/bin/docker run --name=avicontroller {{ ports_list_string }} -d --privileged {{ env_variables_string }} {{ mounts_string }} {{ con_image }}
+ExecStartPre=/usr/bin/docker run {{ docker_run_params }}
 ExecStart=/usr/bin/docker wait avicontroller
 ExecStop=-/usr/bin/docker stop avicontroller
 ExecStop=-/sbin/ifconfig {{ dev_name }}:1 down
