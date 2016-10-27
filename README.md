@@ -20,8 +20,7 @@ master_ctl_ip: ''
 ### Optional Variables
 ```
 
-version: latest
-
+con_version: latest
 con_cores: "{{ ansible_processor_count }}"
 con_memory_gb: "{{ ansible_memtotal_mb // 1024 }}"
 destination_disk: "{{ ansible_mounts|sort(reverse=True, attribute='size_total')|map(attribute='mount')|first}}"
