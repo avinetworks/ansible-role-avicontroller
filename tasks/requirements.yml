@@ -5,10 +5,6 @@
   fail: msg="Variable controller_ip is not defined"
   when: controller_ip == None
 
-- name: Avi Controller | Requirements | Check if Master Controller IP is defined.
-  fail: msg="Variable master_ctl_ip is not defined"
-  when: master_ctl_ip == None
-
 - name: Avi Controller | Requirements | Install python-netaddr on Ansible host | yum
   yum: name=python-netaddr
   delegate_to: localhost

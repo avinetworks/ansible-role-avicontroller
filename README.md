@@ -14,7 +14,6 @@ Possible variables are listed below:
 ```
 
 controller_ip: ''
-master_ctl_ip: ''
 ```
 
 ### Optional Variables
@@ -31,7 +30,6 @@ con_metrics_disk_gb: ~
 con_logs_disk_path: ~
 con_logs_disk_gb: ~
 controller_ip: ~
-master_ctl_ip: ~
 dev_name: ~
 setup_json: ~
 ports:
