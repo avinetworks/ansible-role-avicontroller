@@ -1,6 +1,8 @@
 # avinetworks.avicontroller
 
 [![Build Status](https://travis-ci.org/avinetworks/ansible-role-avicontroller.svg?branch=master)](https://travis-ci.org/avinetworks/ansible-role-avicontroller)
+[![Ansible Galaxy](https://img.shields.io/badge/galaxy-avinetworks.avicontroller-blue.svg)](https://galaxy.ansible.com/avinetworks/avicontroller/)
+
 
 Using this module you are able to install the Avi Vantage Controlller, to your system. However, minimum requirements must be met.
 
@@ -105,7 +107,7 @@ The following is an example with minimum parameters.
 
 ## License
 
-BSD
+MIT
 
 ## Author Information
 
