@@ -11,8 +11,7 @@ con_metrics_disk_path: ~
 con_metrics_disk_gb: ~
 con_logs_disk_path: ~
 con_logs_disk_gb: ~
-controller_ip: ~
-master_ctl_ip: ~
+controller_ip: "{{ ansible_default_ipv4.address }}"
 dev_name: ~
 setup_json: ~
 ports:

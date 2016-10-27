@@ -1,5 +1,7 @@
 # avinetworks.avicontroller
 
+[![Build Status](https://travis-ci.org/avinetworks/ansible-role-avicontroller.svg?branch=master)](https://travis-ci.org/avinetworks/ansible-role-avicontroller)
+
 Using this module you are able to install the Avi Vantage Controlller, to your system. However, minimum requirements must be met.
 
 ## Requirements
@@ -11,11 +13,7 @@ Requires Docker to be installed. We use `avinetworks.docker` to install Docker o
 Possible variables are listed below:
 
 ### Required Variables
-```
-
-controller_ip: ''
-master_ctl_ip: ''
-```
+Could be ran with all defaults. IP will become the default main IP from ansible_default_ipv4.address
 
 ### Optional Variables
 ```
@@ -30,8 +28,7 @@ con_metrics_disk_path: ~
 con_metrics_disk_gb: ~
 con_logs_disk_path: ~
 con_logs_disk_gb: ~
-controller_ip: ~
-master_ctl_ip: ~
+controller_ip: "{{ ansible_default_ipv4.address }}"
 dev_name: ~
 setup_json: ~
 ports:
@@ -93,10 +90,18 @@ avinetworks.docker
   roles:
     - role: avinetworks.avicontroller
       controller_ip: 10.10.27.101
-      master_ctl_ip: 10.10.27.101
       con_cores: 4                     # If not specified core count is 4
       con_memory_gb: 12                 # If not specified memory count is 12
 ```
+
+The following is an example with minimum parameters.
+```
+
+- hosts: servers
+  roles:
+    - role: avinetworks.avicontroller
+```
+
 
 ## License
 
