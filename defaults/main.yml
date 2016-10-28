@@ -2,6 +2,7 @@
 # defaults file for avinetworks.avicontroller
 con_version: latest
 con_image: "avinetworks/controller:{{ con_version }}"
+controller_ip: "{{ ansible_default_ipv4.address }}"
 con_cores: "{{ ansible_processor_count }}"
 con_memory_gb: "{{ ansible_memtotal_mb // 1024 }}"
 destination_disk: "{{ ansible_mounts|sort(reverse=True, attribute='size_total')|map(attribute='mount')|first}}"
@@ -11,7 +12,6 @@ con_metrics_disk_path: ~
 con_metrics_disk_gb: ~
 con_logs_disk_path: ~
 con_logs_disk_gb: ~
-controller_ip: "{{ ansible_default_ipv4.address }}"
 dev_name: ~
 setup_json: ~
 ports:
@@ -22,7 +22,6 @@ ports:
   serviceengine_ssh: 5099
   controller_cli: 5054
   snmp: 161
-
 
 mounts_extras: []
 mounts_default:
