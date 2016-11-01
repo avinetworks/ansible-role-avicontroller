@@ -1,5 +1,6 @@
 ---
 # defaults file for avinetworks.avicontroller
+docker_repo: ~
 con_version: latest
 con_image: "avinetworks/controller:{{ con_version }}"
 controller_ip: "{{ ansible_default_ipv4.address }}"
