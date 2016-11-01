@@ -18,7 +18,7 @@ Could be ran with all defaults. IP will become the default main IP from ansible_
 
 ### Optional Variables
 ```
-
+docker_repo: ~
 con_version: latest
 con_cores: "{{ ansible_processor_count }}"
 con_memory_gb: "{{ ansible_memtotal_mb // 1024 }}"
