@@ -1,8 +1,18 @@
 ---
 # defaults file for avinetworks.avicontroller
+
+
+# parameters for use when deploying as package
+package_deploy: false
+package_source: controller_docker.tgz
+package_dest: /tmp/controller_docker.tgz
+
+# parameters for use when pulling from docker hub or docker repo
 docker_repo: ~
 con_version: latest
 con_image: "avinetworks/controller:{{ con_version }}"
+
+# standard parameters
 controller_ip: "{{ ansible_default_ipv4.address }}"
 con_cores: "{{ ansible_processor_count }}"
 con_memory_gb: "{{ ansible_memtotal_mb // 1024 }}"

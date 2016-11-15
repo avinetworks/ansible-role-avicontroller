@@ -18,8 +18,18 @@ Could be ran with all defaults. IP will become the default main IP from ansible_
 
 ### Optional Variables
 ```
+
+# parameters for use when deploying as package
+package_deploy: false
+package_source: controller_docker.tgz
+package_dest: /tmp/controller_docker.tgz
+
+# parameters for use when pulling from docker hub or docker repo
 docker_repo: ~
 con_version: latest
+con_image: "avinetworks/controller:{{ con_version }}"
+
+# Standard parameters
 con_cores: "{{ ansible_processor_count }}"
 con_memory_gb: "{{ ansible_memtotal_mb // 1024 }}"
 destination_disk: "{{ ansible_mounts|sort(reverse=True, attribute='size_total')|map(attribute='mount')|first}}"
