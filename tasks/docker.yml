@@ -27,7 +27,7 @@
   when: con_docker_image_exists.rc == 0
 
 - name: Avi Controller | Docker | Deploy the Avi Controller image from the Package
-  file: src={{ package_source }} dest={{ package_dest }}
+  copy: src={{ package_source }} dest={{ package_dest }}
   when: package_deploy
 
 - name: Avi Controller | Docker | Load the Avi Controller image from the Package
