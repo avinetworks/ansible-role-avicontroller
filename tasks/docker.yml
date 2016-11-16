@@ -26,10 +26,18 @@
   ignore_errors: true
   when: con_docker_image_exists.rc == 0
 
+- name: Avi Controller | Docker | Deploy the Avi Controller image from the Package
+  copy: src={{ package_source }} dest={{ package_dest }}
+  when: package_deploy
+
+- name: Avi Controller | Docker | Load the Avi Controller image from the Package
+  shell: "docker load -i {{ package_dest }}"
+  when: package_deploy
+
 - name: Avi Controller | Docker | Load the Avi Controller image from Docker Hub
   shell: "docker pull {{ con_image }}"
-  when: docker_repo == None
+  when: docker_repo == None and not package_deploy
 
 - name: Avi SE | Docker | Load the Avi Controller image from custom Docker Repository
   shell: "docker pull {{ docker_repo }}/{{ con_image }}"
-  when: docker_repo != None
+  when: docker_repo != None and not package_deploy
