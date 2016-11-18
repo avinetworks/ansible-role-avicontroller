@@ -14,10 +14,7 @@
     - /etc/init.d/avicontroller
 
 - name: Avi Controller | Stop avicontroller service
-  service:
-    name: avicontroller
-    enabled: no
-    state: stopped
+  service: name=avicontroller enabled=no state=stopped
   when: "{{ item.stat.exists == true }}"
   with_items: "{{ service_installed.results }}"
 
@@ -33,13 +30,8 @@
   when: ansible_service_mgr != 'systemd'
 
 - name: Avi Controller | Copy setup.json to controller
-  copy:
-    src: "{{ setup_json }}"
-    dest: "{{ con_disk_path }}/setup.json"
+  copy: src="{{ setup_json }}" dest="{{ con_disk_path }}/setup.json"
   when: setup_json != None
 
 - name: Avi Controller | Start Avi Controller service
-  service:
-    name: avicontroller
-    enabled: yes
-    state: started
+  service: name=avicontroller enabled=yes state=started
