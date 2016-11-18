@@ -30,7 +30,7 @@ con_version: latest
 con_image: "avinetworks/controller:{{ con_version }}"
 
 # Standard parameters
-con_cores: "{{ ansible_processor_count }}"
+con_cores: "{{ ansible_processor_cores * ansible_processor_count }}"
 con_memory_gb: "{{ ansible_memtotal_mb // 1024 }}"
 destination_disk: "{{ ansible_mounts|sort(reverse=True, attribute='size_total')|map(attribute='mount')|first}}"
 con_disk_path: "{{ destination_disk }}opt/avi/controller/data"
