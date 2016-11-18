@@ -37,11 +37,15 @@
     dev_name: "{{ mgmt_device.stdout }}"
   when: mgmt_device
 
+- name: Avi Controller | Requirements | Set maximum core count
+  set_fact:
+    max_cores: "{{ ansible_processor_cores * ansible_processor_count }}"
+
 - name: Avi Controller | Requirements | Controller needs more than 4 cores.
   assert:
     that:
-      - "ansible_processor_cores >= 4"
-      - "con_cores <= ansible_processor_cores"
+      - "max_cores >= 4"
+      - "con_cores <= max_cores"
 
 - name: Avi Controller | Requirements | Set the ansible_memtotal_gb var
   set_fact:

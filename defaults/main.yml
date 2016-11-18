@@ -63,7 +63,7 @@ ports_list_default:
   - "{{ ports.portal_https }}:443"
   - "{{ ports.sec_channel_neg }}:8443"
   - "{{ ports.controller_cli }}:5054"
-  - "{{ ports.snmp }}:161"
+  - "{{ ports.snmp }}:161/udp"
 ports_list_all: "{{ ports_list_extras + ports_list_default }}"
 ports_list_string: "{% for port in ports_list_all|reject('match', '^$') %} -p {{ port }}{% endfor %}"
 
