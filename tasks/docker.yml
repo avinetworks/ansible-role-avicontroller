@@ -1,5 +1,4 @@
 ---
-# Deploy the image from a source
 - name: Avi Controller | Docker | Deploy the image from the Package
   copy: src={{ package_source }} dest={{ package_dest }}
   when: package_deploy
