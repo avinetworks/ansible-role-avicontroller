@@ -25,6 +25,7 @@ con_logs_disk_path: ~
 con_logs_disk_gb: ~
 dev_name: ~
 setup_json: ~
+fresh_install: false
 ports:
   portal_http: 80
   portal_https: 443
