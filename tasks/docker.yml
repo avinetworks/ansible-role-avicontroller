@@ -1,43 +1,31 @@
 ---
-- name: Avi Controller | Docker | Check existing Docker container is running
-  shell: docker ps -a | grep avinetworks/controller | grep -v CONTAINER
-  ignore_errors: true
-  changed_when: false
-  failed_when: false
-  register: con_docker_container_exists
-
-- name: Avi Controller | Docker | Stop existing Avi Controller Docker container
-  shell: docker stop `docker ps -a | grep avinetworks/controller | grep -v CONTAINER | awk '{printf "%s\\n",$1}'`
-  when: con_docker_container_exists.rc == 0
-
-- name: Avi Controller | Docker | Remove existing Avi Controller Docker container
-  shell: docker rm -f `docker ps -a | grep avinetworks/controller | grep -v CONTAINER | awk '{printf "%s\\n",$1}'`
-  when: con_docker_container_exists.rc == 0
-
-- name: Avi Controller | Docker | Check for existing Avi Controller Docker image
-  shell: docker images | grep avinetworks/controller
-  ignore_errors: true
-  changed_when: false
-  failed_when: false
-  register: con_docker_image_exists
-
-- name: Avi Controller | Docker | Removing existing Avi Controller Docker images
-  shell: docker rmi -f `docker images | grep avinetworks/controller | grep -v REPOSITORY | awk '{printf "%s\\n",$3}'`
-  ignore_errors: true
-  when: con_docker_image_exists.rc == 0
-
-- name: Avi Controller | Docker | Deploy the Avi Controller image from the Package
+# Deploy the image from a source
+- name: Avi Controller | Docker | Deploy the image from the Package
   copy: src={{ package_source }} dest={{ package_dest }}
   when: package_deploy
 
-- name: Avi Controller | Docker | Load the Avi Controller image from the Package
+- name: Avi Controller | Docker | Load the image from the Package
   shell: "docker load -i {{ package_dest }}"
   when: package_deploy
 
-- name: Avi Controller | Docker | Load the Avi Controller image from Docker Hub
+- name: Avi Controller | Docker | Load the image from Docker Hub
   shell: "docker pull {{ con_image }}"
   when: docker_repo == None and not package_deploy
 
-- name: Avi SE | Docker | Load the Avi Controller image from custom Docker Repository
+- name: Avi Controller | Docker | Load the image from custom Docker Repository
   shell: "docker pull {{ docker_repo }}/{{ con_image }}"
   when: docker_repo != None and not package_deploy
+
+- name: Avi Controller | Docker | Get list of running controller containers
+  shell: "docker ps -f ancestor=avinetworks/controller -q"
+  register: running_con_containers
+
+- name: Avi Controller | Docker | Check if desired version is already running.
+  shell: "docker ps -f ancestor={{ con_image }} -q"
+  register: desired_running
+
+- name: Avi Controller | Docker | Stop and remove the container if it's not the desired version
+  shell: "docker stop {{ item }} && docker rm -f {{ item }}"
+  with_items:
+    - "{{ running_con_containers.stdout_lines }}"
+  when: item not in desired_running.stdout_lines
