@@ -57,6 +57,14 @@
       - "ansible_memtotal_mb >= 12288"
       - "con_memory_gb <= ansible_memtotal_gb"
 
+- name: Avi Controller | Requirements | Clean directories for fresh install
+  file: path="{{ item }}" state=absent
+  when: item != None and fresh_install
+  with_items:
+    - "{{ con_disk_path }}"
+    - "{{ con_metrics_disk_path }}"
+    - "{{ con_logs_disk_path }}"
+
 - name: Avi Controller | Requirements | Create directories for controller
   file: path="{{ item }}" state=directory mode=0755
   when: item != None
