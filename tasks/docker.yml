@@ -17,7 +17,7 @@
   when: docker_repo != None and not package_deploy
 
 - name: Avi Controller | Docker | Get list of running controller containers
-  shell: "docker ps ancestor=avinetworks/controller -q"
+  shell: "docker ps -f ancestor=avinetworks/controller -q"
   register: running_con_containers
 
 - name: Avi Controller | Docker | Check if desired version is already running.
