@@ -2,8 +2,6 @@
 # tasks file for avinetworks.avicontroller
 - name: Avi Controller | Check minimum requirements
   include: requirements.yml
-  tags:
-    - requirements
 
 - name: Avi Controller | Copy setup.json to controller
   copy: src="{{ setup_json }}" dest="{{ con_disk_path }}/setup.json"
