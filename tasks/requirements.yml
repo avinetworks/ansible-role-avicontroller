@@ -1,10 +1,6 @@
 ---
 # check system against minimum requirements
 
-- name: Avi Controller | Requirements | Check if Controller IP is defined.
-  fail: msg="Variable controller_ip is not defined"
-  when: controller_ip == None
-
 - name: Avi Controller | Requirements | Install python-netaddr on Ansible host | yum
   yum: name=python-netaddr
   delegate_to: localhost

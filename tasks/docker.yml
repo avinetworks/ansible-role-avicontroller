@@ -14,6 +14,8 @@
 
 - name: Avi Controller | Docker | Load the image from docker hub
   shell: "docker pull {{ con_image }}"
+  register: load_docker_hub
+  changed_when: "'Status: Image is up to date' not in load_docker_hub.stdout"
   when:
     - docker_repo == None
     - not package_deploy
@@ -21,6 +23,7 @@
 
 - name: Avi Controller | Docker | Load the image from custom docker repository
   shell: "docker pull {{ docker_repo }}/{{ con_image }}"
+  changed_when: "'Status: Image is up to date' not in load_docker_hub.stdout"
   when:
     - docker_repo != None
     - not package_deploy
