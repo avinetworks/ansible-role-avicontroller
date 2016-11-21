@@ -1,27 +1,5 @@
 ---
 # check system against minimum requirements
-
-- name: Avi Controller | Requirements | Install python-netaddr on Ansible host | yum
-  yum: name=python-netaddr
-  delegate_to: localhost
-  ignore_errors: true
-  failed_when: false
-
-- name: Avi Controller | Requirements | Install python-netaddr on Ansible host | apt
-  apt: name=python-netaddr
-  delegate_to: localhost
-  ignore_errors: true
-  failed_when: false
-
-- name: Avi Controller | Requirements | Install python-netaddr on Ansible host | dnf
-  dnf: name=python-netaddr
-  delegate_to: localhost
-  ignore_errors: true
-  failed_when: false
-
-- name: Avi Controller | Requirements | Verify the IP Address is Valid.
-  assert: { that: "controller_ip | ipaddr" }
-
 - name: Avi Controller | Requirements | Check for netstat
   shell: "which netstat"
   failed_when: false
