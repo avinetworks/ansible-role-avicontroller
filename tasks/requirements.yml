@@ -1,36 +1,29 @@
 ---
 # check system against minimum requirements
-
-- name: Avi Controller | Requirements | Check if Controller IP is defined.
-  fail: msg="Variable controller_ip is not defined"
-  when: controller_ip == None
-
-- name: Avi Controller | Requirements | Install python-netaddr on Ansible host | yum
-  yum: name=python-netaddr
-  delegate_to: localhost
-  ignore_errors: true
+- name: Avi Controller | Requirements | Check for netstat
+  shell: "which netstat"
   failed_when: false
+  changed_when: false
+  register: netstat
 
-- name: Avi Controller | Requirements | Install python-netaddr on Ansible host | apt
-  apt: name=python-netaddr
-  delegate_to: localhost
-  ignore_errors: true
+- name: Avi Controller | Requirements | Check for ip addr
+  shell: "which ip"
+  register: ip_addr
   failed_when: false
+  changed_when: false
+  when: netstat.rc == 1
 
-- name: Avi Controller | Requirements | Install python-netaddr on Ansible host | dnf
-  dnf: name=python-netaddr
-  delegate_to: localhost
-  ignore_errors: true
-  failed_when: false
-
-- name: Avi Controller | Requirements | Verify the IP Address is Valid.
-  assert: { that: "controller_ip | ipaddr" }
-
-- name: Avi Controller | Requirements | Get the management device name
+- name: Avi Controller | Requirements | Get the management device name | netstat
   shell: "netstat -ie | grep -B1 {{ controller_ip }} | head -n1 | awk -F ':' '{print $1}'"
   register: mgmt_device
   changed_when: false
-  when: dev_name == None
+  when: netstat.rc == 0
+
+- name: Avi Controller | Requirements | Get the management device name | ip addr
+  shell: "ip addr show | grep {{ controller_ip }} | awk '{print $8}'"
+  register: mgmt_device
+  changed_when: false
+  when: ip_addr.rc == 0
 
 - name: Avi Controller | Requirements | Set the management device name
   set_fact:

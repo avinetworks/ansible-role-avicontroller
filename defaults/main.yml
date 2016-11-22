@@ -1,7 +1,6 @@
 ---
 # defaults file for avinetworks.avicontroller
 
-
 # parameters for use when deploying as package
 package_deploy: false
 package_source: controller_docker.tgz
@@ -35,6 +34,7 @@ ports:
   controller_cli: 5054
   snmp: 161
 
+  # Mount variables which are sent to the docker container, these are used in the service templates.
 mounts_extras: []
 mounts_default:
   - "/:/hostroot/"
@@ -45,6 +45,7 @@ mounts_default:
 mounts_all: "{{ mounts_extras + mounts_default}}"
 mounts_string: "{% for mount_var in mounts_all|reject('match', '^$') %} -v {{ mount_var }}{% endfor %}"
 
+# Environment variables which are sent to the docker container, these are used in the service templates.
 env_variables_extras: []
 env_variables_default:
   - "CONTAINER_NAME=avicontroller"
@@ -68,4 +69,5 @@ ports_list_default:
 ports_list_all: "{{ ports_list_extras + ports_list_default }}"
 ports_list_string: "{% for port in ports_list_all|reject('match', '^$') %} -p {{ port }}{% endfor %}"
 
+# !!!! BEWARE: This is to completely override everything passed into the service template for the docker run. DON'T EDIT THIS UNLESS YOU KNOW WHAT YOUR DOING!!!!!
 docker_run_params: "--name=avicontroller {{ ports_list_string }} -d --privileged {{ env_variables_string }} {{ mounts_string }} {{ con_image }}"
