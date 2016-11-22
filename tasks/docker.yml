@@ -23,7 +23,8 @@
 
 - name: Avi Controller | Docker | Load the image from custom docker repository
   shell: "docker pull {{ docker_repo }}/{{ con_image }}"
-  changed_when: "'Status: Image is up to date' not in load_docker_hub.stdout"
+  register: load_docker_repo
+  changed_when: "'Status: Image is up to date' not in load_docker_repo.stdout"
   when:
     - docker_repo != None
     - not package_deploy
@@ -34,7 +35,7 @@
   changed_when: false
   register: docker_image
 
-- name: Avi Controller | Docker | Get list of running controller containers
+- name: Avi Controller | Docker | Get list of running avicontroller containers
   shell: "docker ps -f name=avicontroller -q"
   changed_when: false
   register: running_con_containers
@@ -44,16 +45,27 @@
   changed_when: false
   register: desired_running
 
-- name: Avi Controller | Docker | Stop the container if it's not the desired version.
-  shell: "docker stop {{ item }}"
+- name: Avi Controller | Check for existing avicontroller service
+  stat:
+    path: "{{ item }}"
+  register: service_installed
   with_items:
-    - "{{ running_con_containers.stdout_lines }}"
-  when:
-    - item not in desired_running.stdout_lines
+    - /etc/systemd/system/avicontroller.service
+    - /etc/init.d/avicontroller
 
-- name: Avi Controller | Docker | Remove the container if it's not the desired version.
-  shell: "docker rm -f {{ item }}"
+- name: Avi Controller | Stop avicontroller service
+  service: name=avicontroller enabled=no state=stopped
+  register: stopped_service
+  when:
+    - "{{ item.stat.exists }} == true"
+    - desired_running.stdout == ""
+  with_items: "{{ service_installed.results }}"
+
+
+- name: Avi Controller | Docker | Stop and Remove the container if it's not the desired version.
+  shell: "docker stop {{ item }} && docker rm -f {{ item }}"
   with_items:
     - "{{ running_con_containers.stdout_lines }}"
   when:
     - item not in desired_running.stdout_lines
+    - stopped_service.changed

@@ -1,6 +1,0 @@
----
-- name: Avi Controller | Restart the Avi Controller service | systemd
-  systemd: daemon_reload=yes name=avicontroller enabled=yes state=restarted
-
-- name: Avi Controller | Restart the Avi Controller service | init.d
-  service: name=avicontroller enabled=yes state=restarted

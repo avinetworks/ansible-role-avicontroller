@@ -1,4 +1,11 @@
 ---
-- name: Avi Controller | Deploy the Avi Controller service | systemd
+- name: Avi Controller | Deploy the avicontroller service | systemd
   template: src=avicontroller.service.j2 dest=/etc/systemd/system/avicontroller.service mode=0744
-  notify: Avi Controller | Restart the Avi Controller service | systemd
+  register: avicontroller_service
+
+- name: Avi Controller | Restart the avicontroller service | systemd
+  systemd: daemon_reload=yes name=avicontroller enabled=yes state=restarted
+  when: avicontroller_service.changed or load_docker_repo.changed or load_docker_hub.changed
+
+- name: Avi Controller | Start the avicontroller service | systemd
+  systemd: daemon_reload=yes name=avicontroller enabled=yes state=started
