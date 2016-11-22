@@ -11,51 +11,40 @@ Requires Docker to be installed. We have created `avinetworks.docker` to install
 
 ## Role Variables
 
-Possible variables are listed below:
+| Variable | Required | Default | Comments |
+|-----------------------|----------|-----------|---------|
+| `package_deploy` | No | `false` | Set to true to deploy via package   |
+| `package_source` | No | `controller_docker.tgz` | Source location of the docker tgz |
+| `package_dest` | No | `/tmp/controller_docker.tgz` | Destination location on the remote server |
+| `docker_repo` | No | `None` | If using a local repository please enter it here. |
+| `con_version` | No | `latest` | Version of the Avi Controller package you want to deploy. |
+| `con_image` | No | `avinetworks/controller:{{ con_version }}` | Full name of the controller image. |
+| `con_cores` | No | `{{ ansible_processor_cores * ansible_processor_count }}` | How many cores the controller will use. |
+| `con_memory_gb` | No | `{{ ansible_memtotal_mb // 1024 }}` | How much memory the controller will use.  |
+| `destination_disk` | No | `auto-detect based on ansible_mounts largest sized disk` | The disk that the controller data will be installed |
+| `con_disk_path` | No | `{{ destination_disk }}opt/avi/controller/data` | The path that the controller data will be installed. |
+| `con_disk_gb` | No | `30` | The size of the disk that will be used by controller data. |
+| `con_metrics_disk_path` | No | `None` | The path that the controller metric data will be stored. |
+| `con_metrics_disk_gb` | No | `None` | The size of the disk that will be used by metric data. |
+| `con_logs_disk_path` | No | `None` | The path that the controller log data will be stored. |
+| `con_logs_disk_gb` | No | `None` | The size of the disk that will be used by log data. |
+| `controller_ip` | No | `{{ ansible_default_ipv4.address }}` | The IP address of the controller. |
+| `dev_name` | No | `auto-detect based on controller_ip` | The device name that will be used by the controller. |
+| `setup_json` | No | `None` | The source location of the setup.json file. Used to auto-configure a controller. |
+| `portal_http_port` | No | `80` | |
+| `portal_https_port` | No | `443` | |
+| `sec_channel_neg_port` | No | `8443` | |
+| `controller_ssh_port` | No | `5098` | |
+| `serviceengine_ssh_port` | No | `5099` | |
+| `controller_cli_port` | No | `5054` | |
+| `snmp_port` | No | `161` | |
+| `mounts_extras` | No | `[]` | Extra mounting points to be used by the controller. |
+| `env_variables_extras` | No | `[]` | Extra environment variables to be used by the controller. |
+| `ports_list_extras` | No | `[]` | Extra ports to be used by the controller. |
+
 
 ### Required Variables
 Could be ran with all defaults. IP will become the default main IP from ansible_default_ipv4.address
-
-### Optional Variables
-```
-
-# parameters for use when deploying as package
-package_deploy: false
-package_source: controller_docker.tgz
-package_dest: /tmp/controller_docker.tgz
-
-# parameters for use when pulling from docker hub or docker repo
-docker_repo: ~
-con_version: latest
-con_image: "avinetworks/controller:{{ con_version }}"
-
-# Standard parameters
-con_cores: "{{ ansible_processor_cores * ansible_processor_count }}"
-con_memory_gb: "{{ ansible_memtotal_mb // 1024 }}"
-destination_disk: "{{ ansible_mounts|sort(reverse=True, attribute='size_total')|map(attribute='mount')|first}}"
-con_disk_path: "{{ destination_disk }}opt/avi/controller/data"
-con_disk_gb: 30
-con_metrics_disk_path: ~
-con_metrics_disk_gb: ~
-con_logs_disk_path: ~
-con_logs_disk_gb: ~
-controller_ip: "{{ ansible_default_ipv4.address }}"
-dev_name: ~
-setup_json: ~
-ports:
-  portal_http: 80
-  portal_https: 443
-  sec_channel_neg: 8443
-  controller_ssh: 5098
-  serviceengine_ssh: 5099
-  controller_cli: 5054
-  snmp: 161
-
-# Use these to add parameters manually if desired. These do not overwrite the defaults.
-mounts_extras: [] # Do NOT need to include -v in each string
-env_variables_extras: [] # Do NOT need to include -e in each string
-ports_list_extras: [] # Do NOT need to include -p in each string
-```
 
 ### Parameter Override Variables
 However, you are able to provide these parameters another way. Using the following variables. This will allow the user to customize all values.  
@@ -83,10 +72,6 @@ ports_list_all:
   - "5054:5054"
   - "161:161/udp"
 ```
-
-## Dependencies
-
-avinetworks.docker
 
 ## Example Playbook
 

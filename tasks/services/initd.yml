@@ -2,7 +2,7 @@
   template: src=avicontroller.j2 dest=/etc/init.d/avicontroller mode=0744
   register: avicontroller_service
 
-- name: Avi Controller | Deploying rc links
+- name: Avi Controller | Deploying avicontroller rc links
   file: src=/etc/init.d/avicontroller dest={{ item }} state=link
   with_items:
     - /etc/rc0.d/K99avicontroller
@@ -16,3 +16,6 @@
 - name: Avi Controller | Restart the avicontroller service | init.d
   service: name=avicontroller enabled=yes state=restarted
   when: avicontroller_service.changed or load_docker_repo.changed or load_docker_hub.changed
+
+- name: Avi Controller | Start the avicontroller service | init.d
+  service: name=avicontroller enabled=yes state=started
