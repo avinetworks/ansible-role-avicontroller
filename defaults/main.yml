@@ -25,14 +25,13 @@ con_logs_disk_gb: ~
 dev_name: ~
 setup_json: ~
 fresh_install: false
-ports:
-  portal_http: 80
-  portal_https: 443
-  sec_channel_neg: 8443
-  controller_ssh: 5098
-  serviceengine_ssh: 5099
-  controller_cli: 5054
-  snmp: 161
+portal_http_port: 80
+portal_https_port: 443
+sec_channel_neg_port: 8443
+controller_ssh_port: 5098
+serviceengine_ssh_port: 5099
+controller_cli_port: 5054
+snmp_port: 161
 
   # Mount variables which are sent to the docker container, these are used in the service templates.
 mounts_extras: []
@@ -60,12 +59,12 @@ env_variables_string: "{% for env_var in env_variables_all|reject('match', '^$')
 
 ports_list_extras: []
 ports_list_default:
-  - "{{ ports.controller_ssh }}:5098"
-  - "{{ ports.portal_http }}:80"
-  - "{{ ports.portal_https }}:443"
-  - "{{ ports.sec_channel_neg }}:8443"
-  - "{{ ports.controller_cli }}:5054"
-  - "{{ ports.snmp }}:161/udp"
+  - "{{ controller_ssh_port }}:5098"
+  - "{{ portal_http_port }}:80"
+  - "{{ portal_https_port }}:443"
+  - "{{ sec_channel_neg_port }}:8443"
+  - "{{ controller_cli_port }}:5054"
+  - "{{ snmp_port }}:161/udp"
 ports_list_all: "{{ ports_list_extras + ports_list_default }}"
 ports_list_string: "{% for port in ports_list_all|reject('match', '^$') %} -p {{ port }}{% endfor %}"
 
