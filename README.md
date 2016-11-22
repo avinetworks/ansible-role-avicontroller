@@ -31,13 +31,13 @@ Requires Docker to be installed. We have created `avinetworks.docker` to install
 | `controller_ip` | No | `{{ ansible_default_ipv4.address }}` | The IP address of the controller. |
 | `dev_name` | No | `auto-detect based on controller_ip` | The device name that will be used by the controller. |
 | `setup_json` | No | `None` | The source location of the setup.json file. Used to auto-configure a controller. |
-| `portal_http_port` | No | `80` | |
-| `portal_https_port` | No | `443` | |
-| `sec_channel_neg_port` | No | `8443` | |
-| `controller_ssh_port` | No | `5098` | |
-| `serviceengine_ssh_port` | No | `5099` | |
-| `controller_cli_port` | No | `5054` | |
-| `snmp_port` | No | `161` | |
+| `portal_http_port` | No | `80` | Port used for the controllers unsecured web interface. |
+| `portal_https_port` | No | `443` | Port used for the controllers secured web interface. |
+| `sec_channel_neg_port` | No | `8443` | Port to be used by the controller communication interface. |
+| `controller_ssh_port` | No | `5098` | Port used to connect directly to the controllers ssh port. |
+| `serviceengine_ssh_port` | No | `5099` | Port used to connect directly to the service engines ssh port. |
+| `controller_cli_port` | No | `5054` | Port used to access the command line interface of the controller. |
+| `snmp_port` | No | `161` | UDP port used to access the SNMP service on the controller. |
 | `mounts_extras` | No | `[]` | Extra mounting points to be used by the controller. |
 | `env_variables_extras` | No | `[]` | Extra environment variables to be used by the controller. |
 | `ports_list_extras` | No | `[]` | Extra ports to be used by the controller. |
