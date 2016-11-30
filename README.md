@@ -42,10 +42,6 @@ Requires Docker to be installed. We have created `avinetworks.docker` to install
 | `env_variables_extras` | No | `[]` | Extra environment variables to be used by the controller. |
 | `ports_list_extras` | No | `[]` | Extra ports to be used by the controller. |
 
-
-### Required Variables
-Could be ran with all defaults. IP will become the default main IP from ansible_default_ipv4.address
-
 ### Parameter Override Variables
 However, you are able to provide these parameters another way. Using the following variables. This will allow the user to customize all values.  
 **!!!BEWARE: USING THIS WILL ERASE DEFAULTS - USE WITH CAUTION!!!**

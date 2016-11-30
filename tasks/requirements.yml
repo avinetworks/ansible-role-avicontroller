@@ -2,33 +2,35 @@
 # check system against minimum requirements
 - name: Avi Controller | Requirements | Check for netstat
   shell: "which netstat"
+  register: netstat
   failed_when: false
   changed_when: false
-  register: netstat
 
 - name: Avi Controller | Requirements | Check for ip addr
   shell: "which ip"
   register: ip_addr
   failed_when: false
   changed_when: false
-  when: netstat.rc == 1
 
-- name: Avi Controller | Requirements | Get the management device name | netstat
-  shell: "netstat -ie | grep -B1 {{ controller_ip }} | head -n1 | awk -F ':' '{print $1}'"
-  register: mgmt_device
-  changed_when: false
-  when: netstat.rc == 0
+- block:
+  - name: Avi Controller | Requirements | Get the management device name | netstat
+    shell: "netstat -ie | grep -B1 {{ controller_ip }} | head -n1 | awk -F ':' '{print $1}'"
+    register: mgmt_device
+    changed_when: false
+  - name: Avi Controller | Requirements | Set the management device name | netstat
+    set_fact:
+      dev_name: "{{ mgmt_device.stdout }}"
+  when: (netstat.rc == 0 and ip_addr.rc == 0) or (netstat.rc == 0 and ip_addr.rc == 1)
 
-- name: Avi Controller | Requirements | Get the management device name | ip addr
-  shell: "ip addr show | grep {{ controller_ip }} | awk '{print $8}'"
-  register: mgmt_device
-  changed_when: false
-  when: ip_addr.rc == 0
-
-- name: Avi Controller | Requirements | Set the management device name
-  set_fact:
-    dev_name: "{{ mgmt_device.stdout }}"
-  when: mgmt_device
+- block:
+  - name: Avi Controller | Requirements | Get the management device name | ip addr
+    shell: "ip addr show | grep {{ controller_ip }} | awk '{print $NF}'"
+    register: mgmt_device
+    changed_when: false
+  - name: Avi Controller | Requirements | Set the management device name | ip addr
+    set_fact:
+      dev_name: "{{ mgmt_device.stdout }}"
+  when: ip_addr.rc == 0 and netstat.rc == 1
 
 - name: Avi Controller | Requirements | Set maximum core count
   set_fact:
