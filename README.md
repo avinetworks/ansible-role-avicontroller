@@ -31,7 +31,7 @@ Requires Docker to be installed. We have created `avinetworks.docker` to install
 | `controller_ip` | No | `{{ ansible_default_ipv4.address }}` | The IP address of the controller. |
 | `dev_name` | No | `auto-detect based on controller_ip` | The device name that will be used by the controller. |
 | `setup_json` | No | `None` | The source location of the setup.json file. Used to auto-configure a controller. |
-| `fresh_install` | No | `false` | Erases any pre-existing directories associated with the Avi Controller. |
+| `fresh_install` | No | `false` | Erases any pre-existing directories associated with the controller. |
 | `skip_requirements` | No | `false` | Skips any requirements for disk space, ram, and cpu. |
 | `portal_http_port` | No | `80` | Port used for the controllers unsecured web interface. |
 | `portal_https_port` | No | `443` | Port used for the controllers secured web interface. |
