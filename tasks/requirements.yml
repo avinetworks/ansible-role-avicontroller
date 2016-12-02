@@ -41,6 +41,7 @@
     that:
       - "max_cores >= 4"
       - "con_cores <= max_cores"
+  when: not skip_requirements
 
 - name: Avi Controller | Requirements | Set the ansible_memtotal_gb var
   set_fact:
@@ -51,6 +52,7 @@
     that:
       - "ansible_memtotal_mb >= 12288"
       - "con_memory_gb <= ansible_memtotal_gb"
+  when: not skip_requirements
 
 - name: Avi Controller | Requirements | Clean directories for fresh install
   file: path="{{ item }}" state=absent
