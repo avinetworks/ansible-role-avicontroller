@@ -41,6 +41,7 @@
     that:
       - "max_cores >= 4"
       - "con_cores <= max_cores"
+  when: not skip_requirements
 
 - name: Avi Controller | Requirements | Set the ansible_memtotal_gb var
   set_fact:
@@ -51,6 +52,7 @@
     that:
       - "ansible_memtotal_mb >= 12288"
       - "con_memory_gb <= ansible_memtotal_gb"
+  when: not skip_requirements
 
 - name: Avi Controller | Requirements | Clean directories for fresh install
   file: path="{{ item }}" state=absent
@@ -68,36 +70,39 @@
     - "{{ con_metrics_disk_path }}"
     - "{{ con_logs_disk_path }}"
 
-- block:
-    - name: Avi Controller | Requirements | Get disk space on controller disk path
-      shell: "df {{ con_disk_path }} -BG | grep -iv Used | awk '{print $4}' | sed s/G//g"
-      changed_when: false
-      register: con_disk_path_space
-    - name: Avi Controller | Requirements | Check if there is enough space for controller disk path
-      assert:
-        that:
-          - con_disk_gb != None
-          - con_disk_path_space.stdout > con_disk_gb
+- name: Avi Controller | Requirements | Get disk space on controller disk path
+  shell: "df {{ con_disk_path }} -BG | grep -iv Used | awk '{print $4}' | sed s/G//g"
+  changed_when: false
+  register: con_disk_path_space
   when: con_disk_path != None
 
-- block:
-    - name: Avi Controller | Requirements | Get disk space on controller metrics disk path
-      shell: "df {{ con_metrics_disk_path }} -BG | grep -iv Used | awk '{print $4}' | sed s/G//g"
-      register: con_metrics_disk_path_space
-    - name: Avi Controller | Requirements | Check if there is enough space for controller metrics disk path
-      assert:
-        that:
-          - con_metrics_disk_gb != None
-          - con_metrics_disk_path_space.stdout > con_metrics_disk_gb
+- name: Avi Controller | Requirements | Get disk space on controller logs disk path
+  shell: "df {{ con_logs_disk_path }} -BG | grep -iv Used | awk '{print $4}' | sed s/G//g"
+  register: con_logs_disk_path_space
+  when: con_logs_disk_path != None
+
+- name: Avi Controller | Requirements | Get disk space on controller metrics disk path
+  shell: "df {{ con_metrics_disk_path }} -BG | grep -iv Used | awk '{print $4}' | sed s/G//g"
+  register: con_metrics_disk_path_space
   when: con_metrics_disk_path != None
 
-- block:
-    - name: Avi Controller | Requirements | Get disk space on controller logs disk path
-      shell: "df {{ con_logs_disk_path }} -BG | grep -iv Used | awk '{print $4}' | sed s/G//g"
-      register: con_logs_disk_path_space
-    - name: Avi Controller | Requirements | Check if there is enough space for controller logs disk path
-      assert:
-        that:
-          - con_logs_disk_gb != None
-          - con_logs_disk_path_space.stdout > con_logs_disk_gb
-  when: con_logs_disk_path != None
+- name: Avi Controller | Requirements | Check if there is enough space for controller disk path
+  assert:
+    that:
+      - con_disk_gb != None
+      - con_disk_path_space.stdout > con_disk_gb
+  when: con_disk_path != None and not skip_requirements
+
+- name: Avi Controller | Requirements | Check if there is enough space for controller metrics disk path
+  assert:
+    that:
+      - con_metrics_disk_gb != None
+      - con_metrics_disk_path_space.stdout > con_metrics_disk_gb
+  when: con_metrics_disk_path != None and not skip_requirements
+
+- name: Avi Controller | Requirements | Check if there is enough space for controller logs disk path
+  assert:
+    that:
+      - con_logs_disk_gb != None
+      - con_logs_disk_path_space.stdout > con_logs_disk_gb
+  when: con_logs_disk_path != None and not skip_requirements

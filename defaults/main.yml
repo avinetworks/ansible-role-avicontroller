@@ -25,6 +25,7 @@ con_logs_disk_gb: ~
 dev_name: ~
 setup_json: ~
 fresh_install: false
+skip_requirements: false
 portal_http_port: 80
 portal_https_port: 443
 sec_channel_neg_port: 8443

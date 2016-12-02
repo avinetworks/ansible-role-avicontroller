@@ -4,12 +4,11 @@
   changed_when: false
   register: docker_match
 
-- name: Avi Controller | Docker | Deploy the image from the package
-  copy: src={{ package_source }} dest={{ package_dest }}
-  when: package_deploy
-
-- name: Avi Controller | Docker | Load the image from the package
-  shell: "docker load -i {{ package_dest }}"
+- block:
+    - name: Avi Controller | Docker | Deploy the image from the package
+      copy: src={{ package_source }} dest={{ package_dest }}
+    - name: Avi Controller | Docker | Load the image from the package
+      shell: "docker load -i {{ package_dest }}"
   when: package_deploy
 
 - name: Avi Controller | Docker | Load the image from docker hub
