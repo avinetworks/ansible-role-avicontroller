@@ -12,6 +12,11 @@
   failed_when: false
   changed_when: false
 
+- name: Avi Controller | Requirements | Check for docker
+  shell: "which docker"
+  register: docker
+  changed_when: false
+
 - block:
   - name: Avi Controller | Requirements | Get the management device name | netstat
     shell: "netstat -ie | grep -B1 {{ controller_ip }} | head -n1 | awk -F ':' '{print $1}'"
