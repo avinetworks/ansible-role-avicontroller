@@ -1,0 +1,57 @@
+#!/bin/sh
+#
+#       /etc/init.d/avicontroller_watcher
+#
+#       Daemon for avicontroller_watcher
+#
+# chkconfig:   2345 99 99
+# description: AVI Controller WATCHER
+
+### BEGIN INIT INFO
+# Provides:       avicontroller_watcher
+# Required-Start: docker
+# Required-Stop:
+# Should-Start:
+# Should-Stop:
+# Default-Start: 2 3 4 5
+# Default-Stop:  0 1 6
+# Short-Description: start and stop avicontroller_watcher
+# Description: AVI Controller Watcher
+### END INIT INFO
+
+start() {
+    echo "Starting avicontroller watcher"
+    nohup /etc/init.d/avicontroller_watcher.sh 0<&- &>/dev/null &
+}
+
+stop() {
+    echo "Stopping avicontroller watcher"
+    ps -ef | grep avicontroller_watcher.sh | grep -v grep | awk '{print $2}' | xargs --no-run-if-empty kill -9
+    service avicontroller stop
+}
+
+restart() {
+    stop
+    start
+}
+
+case "$1" in
+  start)
+    $1
+    ;;
+  stop)
+    $1
+    ;;
+  restart)
+    $1
+    ;;
+  status)
+    docker ps -f name=avicontroller
+    ;;
+  *)
+    echo $"Usage: $0 {start|stop|status|restart}"
+    exit 2
+    ;;
+esac
+
+exit $?

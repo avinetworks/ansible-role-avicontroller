@@ -1,15 +1,20 @@
 ---
-- name: Avi Controller | Docker | Check if specified image already exists.
-  shell: "docker images -q {{ con_image }}"
-  changed_when: false
-  register: docker_match
-
+# We must do this step first just in case we need to override defaults from the supplied package
 - block:
     - name: Avi Controller | Docker | Deploy the image from the package
       copy: src={{ package_source }} dest={{ package_dest }}
     - name: Avi Controller | Docker | Load the image from the package
-      shell: "docker load -i {{ package_dest }}"
+      shell: "docker load -q -i {{ package_dest }} | awk -F':' '{print $3}'"
+      register: load_docker_image
+    - set_fact:
+        se_version: "{{ load_docker_image.stdout }}"
+        se_image: "avinetworks/se:{{ load_docker_image.stdout }}"
   when: package_deploy
+
+- name: Avi Controller | Docker | Check if specified image already exists.
+  shell: "docker images -q {{ con_image }}"
+  changed_when: false
+  register: docker_match
 
 - name: Avi Controller | Docker | Load the image from docker hub
   shell: "docker pull {{ con_image }}"
@@ -19,6 +24,15 @@
     - docker_repo == None
     - not package_deploy
     - docker_match.stdout == "" or con_version == "latest"
+
+- name: Avi Controller | Docker | Log into the custom docker repository
+  shell: "docker login -u {{ docker_repo_user }} -p {{ docker_repo_password}} {{ docker_repo }}"
+  register: docker_repo_login
+  when:
+    - docker_repo != None
+    - not package_deploy
+    - docker_match.stdout == "" or con_version == "latest"
+    - docker_repo_user != None and docker_repo_password != None
 
 - name: Avi Controller | Docker | Load the image from custom docker repository
   shell: "docker pull {{ docker_repo }}/{{ con_image }}"
@@ -59,7 +73,6 @@
     - "{{ item.stat.exists }} == true"
     - desired_running.stdout == ""
   with_items: "{{ service_installed.results }}"
-
 
 - name: Avi Controller | Docker | Stop and Remove the container if it's not the desired version.
   shell: "docker stop {{ item }} && docker rm -f {{ item }}"

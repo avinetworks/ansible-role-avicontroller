@@ -1,0 +1,125 @@
+#!/bin/sh
+#
+#       /etc/init.d/avicontroller
+#
+#       Daemon for avicontroller
+#
+# chkconfig:   2345 99 99
+# description: Service for the Avi Controller
+
+### BEGIN INIT INFO
+# Provides:       avicontroller
+# Required-Start: docker
+# Required-Stop:
+# Should-Start:
+# Should-Stop:
+# Default-Start: 2 3 4 5
+# Default-Stop:  0 1 6
+# Short-Description: start and stop avicontroller
+# Description: Service for the Avi Controller
+### END INIT INFO
+
+# Get the source function library
+. /etc/rc.d/init.d/functions
+
+# Set common variables
+container=avicontroller
+service_desc="Avi Controller"
+docker_exec=/usr/bin/docker
+logfile="/var/log/${container}.log"
+cidfile="/var/run/${container}.cid"
+
+prestart() {
+  # Clean up any running or existing avicontroller containers
+  if $(docker ps -a -f name=${container} | grep -q ${container}); then
+    echo "[`date`] Removing existing ${service_desc} container" >> ${logfile}
+    echo "${container} pre-start"
+    /usr/bin/docker rm -f ${container}
+  fi
+}
+
+start() {
+  prestart
+  echo "[`date`] Starting the ${service_desc} container" >>  ${logfile}
+  echo "${container} starting..."
+  /usr/bin/docker run {{ docker_run_params }}
+  if [ $? -eq 0 ]; then
+    echo "${container} running..."
+    success
+    /usr/bin/docker wait ${container}
+  else
+    echo "${container} failed to start"
+    failure
+    exit 1
+  fi
+}
+
+stop() {
+  # Stopping the docker process if running
+  if $(docker ps -f name=${container} | grep -q ${container}); then
+    echo "${container} stopping..."
+    /usr/bin/docker stop -t 60 ${container}
+    if [ $? -eq 0 ]; then
+      echo "Stopped the ${service_desc}"
+      echo "[`date`] Stopped the ${service_desc}" >> ${logfile}
+    else
+      failure
+      exit 1
+    fi
+  else
+    echo "${service_dsec} already stopped" >> ${logfile}
+  fi
+  poststop
+}
+
+poststop() {
+  {% if (netstat.rc == 0 and ip_addr.rc == 0) or (netstat.rc == 0 and ip_addr.rc == 1) %}
+  /sbin/ifconfig {{ dev_name }}:1 down
+  {% elseif ip_addr.rc == 0 and netstat.rc == 1 %}
+  /bin/bash -c "ip addr del $(ip addr | grep {{ dev_name }}:avivip | awk '{print $2}') dev {{ dev_name }}"
+  {% endif %}
+  if $(docker ps -a -f name=${container} | grep -q ${container}); then
+    /usr/bin/docker rm -f ${container}
+    if [ $? -eq 0 ]; then
+      echo "Removed the ${service_desc} container"
+      echo "[`date`] Removed the ${service_desc} container." >> ${logfile}
+    fi
+  fi
+}
+
+restart() {
+  stop
+  start
+}
+
+reload() {
+  restart
+}
+
+status() {
+  if $(docker ps -f name=${container} | grep -q ${container}); then
+    echo "${container} running..."
+  else
+    echo "${container} stopped"
+  fi
+}
+
+case "$1" in
+  start)
+    $1
+    ;;
+  stop)
+    $1
+    ;;
+  restart)
+    $1
+    ;;
+  status)
+    $
+    ;;
+    *)
+  echo $"Usage: $0 {start|stop|status|restart|reload}"
+  exit 2
+esac
+
+exit $?

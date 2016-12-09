@@ -16,7 +16,7 @@ controller_ip: "{{ ansible_default_ipv4.address }}"
 con_cores: "{{ ansible_processor_cores * ansible_processor_count }}"
 con_memory_gb: "{{ ansible_memtotal_mb // 1024 }}"
 destination_disk: "{{ ansible_mounts|sort(reverse=True, attribute='size_total')|map(attribute='mount')|first}}"
-con_disk_path: "{{ destination_disk }}opt/avi/controller/data"
+con_disk_path: "{{ destination_disk }}/opt/avi/controller/data"
 con_disk_gb: 30
 con_metrics_disk_path: ~
 con_metrics_disk_gb: ~
@@ -28,11 +28,12 @@ fresh_install: false
 skip_requirements: false
 portal_http_port: 80
 portal_https_port: 443
-sec_channel_neg_port: 8443
+sysint_port: 8443
 controller_ssh_port: 5098
 serviceengine_ssh_port: 5099
 controller_cli_port: 5054
 snmp_port: 161
+se_inband_mgmt: false
 
   # Mount variables which are sent to the docker container, these are used in the service templates.
 mounts_extras: []
@@ -46,6 +47,7 @@ mounts_all: "{{ mounts_extras + mounts_default}}"
 mounts_string: "{% for mount_var in mounts_all|reject('match', '^$') %} -v {{ mount_var }}{% endfor %}"
 
 # Environment variables which are sent to the docker container, these are used in the service templates.
+# TODO: add SE_INBAND_MGMT=false (default)
 env_variables_extras: []
 env_variables_default:
   - "CONTAINER_NAME=avicontroller"
@@ -63,7 +65,7 @@ ports_list_default:
   - "{{ controller_ssh_port }}:5098"
   - "{{ portal_http_port }}:80"
   - "{{ portal_https_port }}:443"
-  - "{{ sec_channel_neg_port }}:8443"
+  - "{{ sysint_port }}:8443"
   - "{{ controller_cli_port }}:5054"
   - "{{ snmp_port }}:161/udp"
 ports_list_all: "{{ ports_list_extras + ports_list_default }}"
