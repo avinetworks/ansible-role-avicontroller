@@ -4,15 +4,15 @@
     env_variables_extras: "{{ env_variables_extras + ['NON_SYSTEMD=1'] }}"
 
 - name: Avi Controller | Services | init.d | Deploy the avicontroller service
-  template: src=avicontroller.j2 dest=/etc/init.d/avicontroller mode=0744
+  template: src=avicontroller.j2 dest=/etc/init.d/avicontroller mode=0755
   register: avicontroller_service
 
 - name: Avi Controller | Services | init.d | Deploy the avicontroller_watcher.sh script
-  copy: src=init/avicontroller_watcher.sh dest=/etc/init.d/avicontroller_watcher.sh mode=0744
+  copy: src=init/avicontroller_watcher.sh dest=/etc/init.d/avicontroller_watcher.sh mode=0755
   register: avicontroller_watcher_sh
 
 - name: Avi Controller | Services | init.d | Deploy the avicontroller_watcher service
-  copy: src=init/avicontroller_watcher dest=/etc/init.d/avicontroller_watcher mode=0744
+  copy: src=init/avicontroller_watcher dest=/etc/init.d/avicontroller_watcher mode=0755
   register: avicontroller_watcher_service
 
 - name: Avi Controller | Services | init.d | Removing avicontroller rc links

@@ -27,14 +27,9 @@
   template: src=upstart/avicontroller.conf.j2 dest=/etc/init/avicontroller.conf mode=0744
   register: avicontroller_service
 
-- name: Avi Controller | Services | upstart | Deploy the init avicontroller service
-  template: src=upstart/avicontroller.j2 dest=/etc/init/avicontroller.conf mode=0744
-  register: avicontroller_init_service
-
 - name: Avi Controller | Services | upstart | Restart the avicontroller service
   service: name=avicontroller enabled=yes state=restarted
   when: avicontroller_service.changed or
-        avicontroller_init_service.changed or
         load_docker_repo.changed or
         load_docker_hub.changed
 

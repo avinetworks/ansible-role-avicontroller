@@ -58,13 +58,14 @@
   changed_when: false
   register: desired_running
 
-- name: Avi Controller | Check for existing avicontroller service
+- name: Avi Controller | Check for an existing avicontroller service
   stat:
     path: "{{ item }}"
   register: service_installed
   with_items:
     - /etc/systemd/system/avicontroller.service
     - /etc/init.d/avicontroller
+    - /etc/init/avicontroller.conf
 
 - name: Avi Controller | Stop avicontroller service
   service: name=avicontroller enabled=no state=stopped

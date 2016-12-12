@@ -12,35 +12,10 @@ stop on runlevel [016]
 # Automatically restart the process if crashed
 respawn
 
-pre-start script
-  # Clean up any running or existing avicontroller containers
-  if $(docker ps -a -f name=avicontroller | grep -q avicontroller); then
-    echo "[`date`] Removing existing Avi Controller container" >> /var/log/avicontroller.log
-    /usr/bin/docker rm -f avicontroller
-    echo "[`date`] Removed existing Avi Controller container" >> /var/log/avicontroller.log
-  fi
-end script
-
 script
-  echo "[`date`] Starting the Avi Controller container" >>  /var/log/avicontroller.log
-  /usr/bin/docker run {{ docker_run_params }}
-  /usr/bin/docker wait avicontroller
+  /usr/sbin/avicontroller start
 end script
 
 post-stop script
-  if $(docker ps -f name=avicontroller | grep -q avicontroller); then
-    echo "[`date`] Stopping the Avi Controller" >> /var/log/avicontroller.log
-    /usr/bin/docker stop -t 60 avicontroller
-    echo "[`date`] Stopped the Avi Controller" >> /var/log/avicontroller.log
-  fi
-  {% if (netstat.rc == 0 and ip_addr.rc == 0) or (netstat.rc == 0 and ip_addr.rc == 1) %}
-  /sbin/ifconfig {{ dev_name }}:1 down
-  {% elseif ip_addr.rc == 0 and netstat.rc == 1 %}
-  /bin/bash -c "ip addr del $(ip addr | grep {{ dev_name }}:avivip | awk '{print $2}') dev {{ dev_name }}"
-  {% endif %}
-  if $(docker ps -a -f name=avicontroller | grep -q avicontroller); then
-    echo "[`date`] Removing the Avi Controller container." >> /var/log/avicontroller.log
-    /usr/bin/docker rm -f avicontroller
-    echo "[`date`] Removed the Avi Controller container." >> /var/log/avicontroller.log
-  fi
+  /usr/sbin/avicontroller stop
 end script

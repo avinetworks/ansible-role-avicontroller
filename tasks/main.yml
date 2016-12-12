@@ -10,5 +10,8 @@
 - name: Avi Controller | Perform Docker tasks
   include: docker.yml
 
-- name: Avi Controller | Install the Avi Controller services
-  include: services/main.yml
+- name: Avi Controller | Services | Install the Avi Controller executable
+  template: src=avicontroller.j2 dest=/usr/sbin/avicontroller mode=0755
+
+- name: Avi Controller | Services | Install the Avi Controller service
+  include: "services/{{ ansible_service_mgr }}.yml"
