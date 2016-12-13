@@ -24,7 +24,7 @@
     - /etc/init.d/avicontroller_watcher.sh
 
 - name: Avi Controller | Services | upstart | Deploy the avicontroller service
-  template: src=upstart/avicontroller.conf.j2 dest=/etc/init/avicontroller.conf mode=0744
+  copy: src=upstart/avicontroller.conf.j2 dest=/etc/init/avicontroller.conf mode=0744
   register: avicontroller_service
 
 - name: Avi Controller | Services | upstart | Restart the avicontroller service

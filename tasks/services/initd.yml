@@ -4,7 +4,7 @@
     env_variables_extras: "{{ env_variables_extras + ['NON_SYSTEMD=1'] }}"
 
 - name: Avi Controller | Services | init.d | Deploy the avicontroller service
-  template: src=avicontroller.j2 dest=/etc/init.d/avicontroller mode=0755
+  copy: src=init/avicontroller dest=/etc/init.d/avicontroller mode=0755
   register: avicontroller_service
 
 - name: Avi Controller | Services | init.d | Deploy the avicontroller_watcher.sh script
