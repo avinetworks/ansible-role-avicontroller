@@ -6,26 +6,38 @@ service_desc="Avi Controller"
 docker_exec=/usr/bin/docker
 logfile="/var/log/${container}.log"
 cidfile="/var/run/${container}.cid"
+docker_run_params="{{ docker_run_params }}"
+dev_name="{{ dev_name }}"
+
+write_log() {
+  echo $1 2>&1 | tee -a ${logfile}
+}
 
 prestart() {
   # Clean up any running or existing avicontroller containers
+  write_log "[`date`] Performing ${container} pre-start steps"
   if $(docker ps -a -f name=${container} | grep -q ${container}); then
-    echo "[`date`] Removing existing ${service_desc} container" >> ${logfile}
-    echo "${container} pre-start"
+    write_log "[`date`] Already running ${container} container performing cleanup"
+    write_log "[`date`] Removing existing ${container} container"
     /usr/bin/docker rm -f ${container}
+    if [ $? -eq 0 ]; then
+      write_log "[`date`] Removed existing ${container} container"
+      /usr/bin/docker wait ${container}
+    else
+      write_log "[`date`] Failed to remove existing ${container} container"
+    fi
   fi
 }
 
 start() {
   prestart
-  echo "[`date`] Starting the ${service_desc} container" >>  ${logfile}
-  echo "${container} starting..."
-  /usr/bin/docker run {{ docker_run_params }}
+  write_log "[`date`] Starting the ${container} container"
+  /usr/bin/docker run ${docker_run_params}
   if [ $? -eq 0 ]; then
-    echo "${container} running..."
+    write_log "[`date`] Service ${container} running..."
     /usr/bin/docker wait ${container}
   else
-    echo "${container} failed to start"
+    write_log "Failed to start the ${container} container"
     exit 1
   fi
 }
@@ -33,31 +45,35 @@ start() {
 stop() {
   # Stopping the docker process if running
   if $(docker ps -f name=${container} | grep -q ${container}); then
-    echo "${container} stopping..."
+    write_log "[`date`] Service ${container} stopping..."
     /usr/bin/docker stop -t 60 ${container}
     if [ $? -eq 0 ]; then
-      echo "Stopped the ${service_desc}"
-      echo "[`date`] Stopped the ${service_desc}" >> ${logfile}
+      write_log "[`date`] Stopped the ${container} container"
     else
       exit 1
     fi
   else
-    echo "${service_dsec} already stopped" >> ${logfile}
+    write_log "[`date`] Service ${container} already stopped"
   fi
   poststop
 }
 
 poststop() {
-  {% if '16.3.1' in con_version or '16.3-9010' in con_version %}
-  /bin/bash -c "ip addr del $(ip addr | grep {{ dev_name }}:avivip | awk '{print $2}') dev {{ dev_name }}"
-  {% else %}
-  /bin/bash -c "ip addr del $(ip addr | grep {{ dev_name }}:1 | awk '{print $2}') dev {{ dev_name }}"
-  {% endif %}
+  if $(ip addr | grep -q ${dev_name}:avivip); then
+    /bin/bash -c "ip addr del $(ip addr | grep ${dev_name}:avivip | awk '{print $2}') dev ${dev_name}"
+    if [ $? -eq 0 ]; then
+      write_log "[`date`] Successfuly removed the cluster vip interface."
+    fi
+  elif $(ip addr | grep -q ${dev_name}:1); then
+    /bin/bash -c "ip addr del $(ip addr | grep ${dev_name}:1 | awk '{print $2}') dev ${dev_name}"
+    if [ $? -eq 0 ]; then
+      write_log "[`date`] Successfuly removed the cluster vip interface."
+    fi
+  fi
   if $(docker ps -a -f name=${container} | grep -q ${container}); then
     /usr/bin/docker rm -f ${container}
     if [ $? -eq 0 ]; then
-      echo "Removed the ${service_desc} container"
-      echo "[`date`] Removed the ${service_desc} container." >> ${logfile}
+      write_log "[`date`] Removed the ${container} container."
     fi
   fi
 }
@@ -80,21 +96,12 @@ status() {
 }
 
 case "$1" in
-  start)
+  start|stop|status|restart|reload)
     $1
     ;;
-  stop)
-    $1
-    ;;
-  restart)
-    $1
-    ;;
-  status)
-    $
-    ;;
-    *)
-  echo $"Usage: $0 {start|stop|status|restart|reload}"
-  exit 2
+  *)
+    echo $"Usage: $0 {start|stop|status|restart|reload}"
+    exit 2
 esac
 
 exit $?
