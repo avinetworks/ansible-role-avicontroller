@@ -6,11 +6,24 @@ service_desc="Avi Controller"
 docker_exec=/usr/bin/docker
 logfile="/var/log/${container}.log"
 cidfile="/var/run/${container}.cid"
-docker_run_params="{{ docker_run_params }}"
+image_name="avinetworks/controller"
+tag="{{ con_version }}"
 dev_name="{{ dev_name }}"
+docker_run_params="{{ docker_run_params }}"
+
 
 write_log() {
   echo $1 2>&1 | tee -a ${logfile}
+}
+
+remove_container() {
+  write_log "[`date`] Removing existing ${container} container"
+  /usr/bin/docker rm -f ${container}
+  if [ $? -eq 0 ]; then
+    write_log "[`date`] Removed existing ${container} container"
+  else
+    write_log "[`date`] Failed to remove existing ${container} container"
+  fi
 }
 
 prestart() {
@@ -18,26 +31,19 @@ prestart() {
   write_log "[`date`] Performing ${container} pre-start steps"
   if $(docker ps -a -f name=${container} | grep -q ${container}); then
     write_log "[`date`] Already running ${container} container performing cleanup"
-    write_log "[`date`] Removing existing ${container} container"
-    /usr/bin/docker rm -f ${container}
-    if [ $? -eq 0 ]; then
-      write_log "[`date`] Removed existing ${container} container"
-      /usr/bin/docker wait ${container}
-    else
-      write_log "[`date`] Failed to remove existing ${container} container"
-    fi
+    remove_container
   fi
 }
 
 start() {
   prestart
   write_log "[`date`] Starting the ${container} container"
-  /usr/bin/docker run ${docker_run_params}
+  /usr/bin/docker run ${docker_run_params} ${image_name}:${tag}
   if [ $? -eq 0 ]; then
     write_log "[`date`] Service ${container} running..."
     /usr/bin/docker wait ${container}
   else
-    write_log "Failed to start the ${container} container"
+    write_log "[`date`] Failed to start the ${container} container"
     exit 1
   fi
 }
@@ -71,10 +77,7 @@ poststop() {
     fi
   fi
   if $(docker ps -a -f name=${container} | grep -q ${container}); then
-    /usr/bin/docker rm -f ${container}
-    if [ $? -eq 0 ]; then
-      write_log "[`date`] Removed the ${container} container."
-    fi
+    remove_container
   fi
 }
 

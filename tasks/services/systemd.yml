@@ -1,8 +1,17 @@
 ---
-- name: Avi Controller | Services | systemd | Deploy the avicontroller service
+# Steps for previous deployments <=16.2.3
+- name: Avi Controller | Services | systemd | 16.x | Deploy the avicontroller service
+  template: src=16.x/avicontroller.service.j2 dest=/etc/systemd/system/avicontroller.service mode=0744
+  register: avicontroller_service
+  when: con_version|version_compare('16.3.2', '<=')
+
+# Steps for the new deployment > 16.2.3
+- name: Avi Controller | Services | systemd | 17.x+ | Deploy the avicontroller service
   copy: src=systemd/avicontroller.service dest=/etc/systemd/system/avicontroller.service mode=0744
   register: avicontroller_service
+  when: con_version|version_compare('16.3.2', '>')
 
+# Standard steps
 - name: Avi Controller | Services | systemd | Restart the avicontroller service
   systemd: daemon_reload=yes name=avicontroller enabled=yes state=restarted
   when: avicontroller_service.changed or
