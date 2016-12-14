@@ -7,13 +7,39 @@ docker_exec=/usr/bin/docker
 logfile="/var/log/${container}.log"
 cidfile="/var/run/${container}.cid"
 image_name="avinetworks/controller"
-tag="{{ con_version }}"
 dev_name="{{ dev_name }}"
 docker_run_params="{{ docker_run_params }}"
 
-
 write_log() {
   echo $1 2>&1 | tee -a ${logfile}
+}
+
+container_running() {
+  docker ps -f name=${container} | grep -q ${container}
+}
+
+container_exists() {
+  docker ps -a -f name=${container} | grep -q ${container}
+}
+
+start_container() {
+  write_log "[`date`] Starting the ${container} container"
+  /usr/bin/docker run ${docker_run_params}
+  if [ $? -eq 0 ]; then
+    write_log "[`date`] Service ${container} running..."
+  else
+    write_log "[`date`] Failed to start the ${container} container"
+    exit 1
+  fi
+}
+
+stop_container() {
+  /usr/bin/docker stop -t 60 ${container}
+  if [ $? -eq 0 ]; then
+    write_log "[`date`] Stopped the ${container} container"
+  else
+    exit 1
+  fi
 }
 
 remove_container() {
@@ -28,36 +54,29 @@ remove_container() {
 
 prestart() {
   # Clean up any running or existing avicontroller containers
-  write_log "[`date`] Performing ${container} pre-start steps"
-  if $(docker ps -a -f name=${container} | grep -q ${container}); then
-    write_log "[`date`] Already running ${container} container performing cleanup"
+  write_log "[`date`] Performing ${container} pre-start step."
+  if container_running && container_exists; then
+    write_log "[`date`] Service ${container} is already running."
+  elif ! container_running && container_exists; then
+    write_log "[`date`] Container ${container} already exists, but not running. This can be caused by an
+      improper shutdown, or service crash. Performing cleanup"
     remove_container
+    start_container
+  else
+    start_container
   fi
 }
 
 start() {
   prestart
-  write_log "[`date`] Starting the ${container} container"
-  /usr/bin/docker run ${docker_run_params} ${image_name}:${tag}
-  if [ $? -eq 0 ]; then
-    write_log "[`date`] Service ${container} running..."
-    /usr/bin/docker wait ${container}
-  else
-    write_log "[`date`] Failed to start the ${container} container"
-    exit 1
-  fi
+  /usr/bin/docker wait ${container}
 }
 
 stop() {
   # Stopping the docker process if running
-  if $(docker ps -f name=${container} | grep -q ${container}); then
+  if container_running; then
     write_log "[`date`] Service ${container} stopping..."
-    /usr/bin/docker stop -t 60 ${container}
-    if [ $? -eq 0 ]; then
-      write_log "[`date`] Stopped the ${container} container"
-    else
-      exit 1
-    fi
+    stop_container
   else
     write_log "[`date`] Service ${container} already stopped"
   fi
@@ -76,7 +95,7 @@ poststop() {
       write_log "[`date`] Successfuly removed the cluster vip interface."
     fi
   fi
-  if $(docker ps -a -f name=${container} | grep -q ${container}); then
+  if container_exists; then
     remove_container
   fi
 }
@@ -91,7 +110,7 @@ reload() {
 }
 
 status() {
-  if $(docker ps -f name=${container} | grep -q ${container}); then
+  if container_running; then
     echo "${container} running..."
   else
     echo "${container} stopped"
