@@ -7,8 +7,8 @@
       shell: "docker load -q -i {{ package_dest }} | awk -F':' '{print $3}'"
       register: load_docker_image
     - set_fact:
-        se_version: "{{ load_docker_image.stdout }}"
-        se_image: "avinetworks/controller:{{ load_docker_image.stdout }}"
+        con_version: "{{ load_docker_image.stdout }}"
+        con_image: "avinetworks/controller:{{ load_docker_image.stdout }}"
   when: package_deploy
 
 - name: Avi Controller | Docker | Check if specified image already exists.
@@ -82,3 +82,15 @@
   when:
     - item not in desired_running.stdout_lines
     - not stopped_service.changed
+
+- name: Avi Controller | Docker | Get list of non-matched controller images.
+  shell: "docker images | grep -v REPOSITORY | grep -v {{ con_version }} | grep avinetworks/controller | awk '{print $3}'"
+  changed_when: false
+  register: non_matched_images
+
+- debug: var=non_matched_images
+
+- name: Avi Controller | Docker | Remove non-matched controller images.
+  shell: "docker rmi -f {{ non_matched_images.stdout_lines|join(' ') }}"
+  changed_when: false
+  when: non_matched_images.stdout != ""
