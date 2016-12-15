@@ -7,6 +7,9 @@
   copy: src="{{ setup_json }}" dest="{{ con_disk_path }}/setup.json"
   when: setup_json != None
 
+- name: Avi Controller | Services | Install the Avi Controller executable
+  template: src=avicontroller.j2 dest=/usr/sbin/avicontroller mode=0755
+
 - name: Avi Controller | Perform Docker tasks
   include: docker.yml
 
@@ -17,11 +20,8 @@
     - name: Avi Controller | Services | Install the Avi Controller service
       include: "services/initd.yml"
       when: ansible_service_mgr != "systemd"
-  when: con_version|version_compare('16.3.2', '<=')
+  when: con_version|version_compare('16.3.3', '<=')
 
-- block:
-    - name: Avi Controller | Services | Install the Avi Controller executable
-      template: src=avicontroller.j2 dest=/usr/sbin/avicontroller mode=0755
-    - name: Avi Controller | Services | Install the Avi Controller service
-      include: "services/{{ ansible_service_mgr }}.yml"
-  when: con_version|version_compare('16.3.2', '>')
+- name: Avi Controller | Services | Install the Avi Controller service
+  include: "services/{{ ansible_service_mgr }}.yml"
+  when: con_version|version_compare('16.3.3', '>')

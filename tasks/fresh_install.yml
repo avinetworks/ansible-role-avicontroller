@@ -1,9 +1,9 @@
 ---
 - block:
-  - name: Avi Controller | Requirements | init.d | Stop the avicontroller_watcher service for fresh install
-    service: name=avicontroller_watcher enabled=no state=stopped
-  - name: Avi Controller | Requirements | init.d | Stop the avicontroller service for fresh install
-    service: name=avicontroller enabled=no state=stopped
+    - name: Avi Controller | Requirements | init.d | Stop the avicontroller_watcher service for fresh install
+      service: name=avicontroller_watcher enabled=no state=stopped
+    - name: Avi Controller | Requirements | init.d | Stop the avicontroller service for fresh install
+      service: name=avicontroller enabled=no state=stopped
   when: ansible_service_mgr == 'init' or ( ansible_service_mgr != 'systemd' and con_version <= 16.2.3)
 
 - name: Avi Controller | Requirements | systemd | Stop the avicontroller service for fresh install
