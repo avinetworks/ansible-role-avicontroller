@@ -8,7 +8,7 @@
       register: load_docker_image
     - set_fact:
         se_version: "{{ load_docker_image.stdout }}"
-        se_image: "avinetworks/se:{{ load_docker_image.stdout }}"
+        se_image: "avinetworks/controller:{{ load_docker_image.stdout }}"
   when: package_deploy
 
 - name: Avi Controller | Docker | Check if specified image already exists.
