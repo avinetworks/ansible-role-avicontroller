@@ -81,4 +81,4 @@
     - "{{ running_con_containers.stdout_lines }}"
   when:
     - item not in desired_running.stdout_lines
-    - stopped_service.changed
+    - not stopped_service.changed
