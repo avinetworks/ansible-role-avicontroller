@@ -1,28 +1,4 @@
 ---
-- name: Avi Controller | Services | upstart | Removing avicontroller rc.d links
-  file: path={{ item }} state=absent
-  with_items:
-    - /etc/rc0.d/K99avicontroller
-    - /etc/rc1.d/K99avicontroller
-    - /etc/rc2.d/S99avicontroller
-    - /etc/rc3.d/S99avicontroller
-    - /etc/rc4.d/S99avicontroller
-    - /etc/rc5.d/S99avicontroller
-    - /etc/rc6.d/K99avicontroller
-
-- name: Avi Controller | Services | upstart | Removing avicontroller_watcher
-  file: path={{ item }} state=absent
-  with_items:
-    - /etc/rc0.d/K99avicontroller_watcher
-    - /etc/rc1.d/K99avicontroller_watcher
-    - /etc/rc2.d/S99avicontroller_watcher
-    - /etc/rc3.d/S99avicontroller_watcher
-    - /etc/rc4.d/S99avicontroller_watcher
-    - /etc/rc5.d/S99avicontroller_watcher
-    - /etc/rc6.d/K99avicontroller_watcher
-    - /etc/init.d/avicontroller_watcher
-    - /etc/init.d/avicontroller_watcher.sh
-
 - name: Avi Controller | Services | upstart | Deploy the avicontroller service
   copy: src=upstart/avicontroller.conf dest=/etc/init/avicontroller.conf mode=0744
   register: avicontroller_service
