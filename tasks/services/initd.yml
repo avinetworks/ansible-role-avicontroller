@@ -7,13 +7,13 @@
 - name: Avi Controller | Services | init.d | 16.x | Deploy the avicontroller service
   template: src=16.x/avicontroller.j2 dest=/etc/init.d/avicontroller mode=0755
   register: avicontroller_service
-  when: con_version|version_compare('16.3.2', '<=')
+  when: con_version|version_compare('17.0.0', '<')
 
 # Steps for the new deployment > 16.2.3
 - name: Avi Controller | Services | init.d | 17.x | Deploy the avicontroller service
   copy: src=init/avicontroller dest=/etc/init.d/avicontroller mode=0755
   register: avicontroller_service
-  when: con_version|version_compare('16.3.2', '>')
+  when: con_version|version_compare('17.0.0', '>=')
 
 - name: Avi Controller | Services | init.d | Deploy the avicontroller_watcher.sh script
   copy: src=init/avicontroller_watcher.sh dest=/etc/init.d/avicontroller_watcher.sh mode=0755
