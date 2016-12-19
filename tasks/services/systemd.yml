@@ -5,7 +5,7 @@
     dest: /usr/lib/systemd/system/avicontroller.service
     mode: 0644
   register: avicontroller_service
-  when: con_version|version_compare('17.0.0, '<')
+  when: con_version|version_compare('17.0.0', '<')
 
 - name: Avi Controller | Services | systemd | 17.x+ | Deploy the avicontroller service
   copy:
