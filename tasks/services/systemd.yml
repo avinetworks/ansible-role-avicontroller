@@ -2,7 +2,7 @@
 - name: Avi Controller | Services | systemd | 16.x | Deploy the avicontroller service
   template:
     src: 16.x/avicontroller.service.j2
-    dest: /usr/lib/systemd/system/avicontroller.service
+    dest: /etc/systemd/system/avicontroller.service
     mode: 0644
   register: avicontroller_service
   when: con_version|version_compare('17.0.0', '<')
@@ -10,7 +10,7 @@
 - name: Avi Controller | Services | systemd | 17.x+ | Deploy the avicontroller service
   copy:
     src: systemd/avicontroller.service
-    dest: /usr/lib/systemd/system/avicontroller.service
+    dest: /etc/systemd/system/avicontroller.service
     mode: 0644
   register: avicontroller_service
   when: con_version|version_compare('17.0.0', '>=')
