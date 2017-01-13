@@ -1,33 +1,21 @@
 ---
+# We must do this step first just in case we need to override defaults from the supplied package
+- name: Avi Controller | Docker | Package Deploy
+  include: docker/package_deploy.yml
+  when: package_deploy
+
 - name: Avi Controller | Docker | Check if specified image already exists.
   shell: "docker images -q {{ con_image }}"
   changed_when: false
   register: docker_match
 
-- block:
-    - name: Avi Controller | Docker | Deploy the image from the package
-      copy: src={{ package_source }} dest={{ package_dest }}
-    - name: Avi Controller | Docker | Load the image from the package
-      shell: "docker load -i {{ package_dest }}"
-  when: package_deploy
+- name: Avi Controller | Docker | Docker Hub
+  include: docker/docker_hub.yml
+  when: docker_repo == None and not package_deploy
 
-- name: Avi Controller | Docker | Load the image from docker hub
-  shell: "docker pull {{ con_image }}"
-  register: load_docker_hub
-  changed_when: "'Status: Image is up to date' not in load_docker_hub.stdout"
-  when:
-    - docker_repo == None
-    - not package_deploy
-    - docker_match.stdout == "" or con_version == "latest"
-
-- name: Avi Controller | Docker | Load the image from custom docker repository
-  shell: "docker pull {{ docker_repo }}/{{ con_image }}"
-  register: load_docker_repo
-  changed_when: "'Status: Image is up to date' not in load_docker_repo.stdout"
-  when:
-    - docker_repo != None
-    - not package_deploy
-    - docker_match.stdout == "" or con_version == "latest"
+- name: Avi Controller | Docker | Custom Repo
+  include: docker/custom_repo.yml
+  when: docker_repo != None and not package_deploy
 
 - name: Avi Controller | Docker | Get our desired docker image id.
   shell: "docker images -q {{ con_image }}"
@@ -35,7 +23,7 @@
   register: docker_image
 
 - name: Avi Controller | Docker | Get list of running avicontroller containers
-  shell: "docker ps -q -f name=avicontroller "
+  shell: "docker ps -q -f name=avicontroller"
   changed_when: false
   register: running_con_containers
 
@@ -44,13 +32,23 @@
   changed_when: false
   register: desired_running
 
-- name: Avi Controller | Check for existing avicontroller service
+- name: Avi Controller | Check for an existing avicontroller service
   stat:
     path: "{{ item }}"
   register: service_installed
   with_items:
     - /etc/systemd/system/avicontroller.service
     - /etc/init.d/avicontroller
+    - /etc/init/avicontroller.conf
+
+- name: Avi Controller | Detect if service avicontroller_watcher is in use
+  stat:
+    path: "/etc/init.d/avicontroller_watcher"
+  register: avicontroller_watcher_status
+
+- name: Avi Controller | Stop the avicontroller_watcher service
+  service: name=avicontroller enabled=no state=stopped
+  when: avicontroller_watcher_status.stat.exists == true and desired_running.stdout == ""
 
 - name: Avi Controller | Stop avicontroller service
   service: name=avicontroller enabled=no state=stopped
@@ -60,11 +58,20 @@
     - desired_running.stdout == ""
   with_items: "{{ service_installed.results }}"
 
-
 - name: Avi Controller | Docker | Stop and Remove the container if it's not the desired version.
   shell: "docker stop {{ item }} && docker rm -f {{ item }}"
   with_items:
     - "{{ running_con_containers.stdout_lines }}"
   when:
     - item not in desired_running.stdout_lines
-    - stopped_service.changed
+    - not stopped_service.changed
+
+- name: Avi Controller | Docker | Get list of non-matched controller images.
+  shell: "docker images | grep -v REPOSITORY | grep -v {{ con_version }} | grep avinetworks/controller | awk '{print $3}'"
+  changed_when: false
+  register: non_matched_images
+
+- name: Avi Controller | Docker | Remove non-matched controller images.
+  shell: "docker rmi -f {{ non_matched_images.stdout_lines|join(' ') }}"
+  changed_when: false
+  when: non_matched_images.stdout != ""

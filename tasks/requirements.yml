@@ -1,26 +1,9 @@
 ---
 # check system against minimum requirements
-- name: Avi Controller | Requirements | Check for netstat
-  shell: "which netstat"
-  register: netstat
-  failed_when: false
+- name: Avi Controller | Requirements | Check for docker
+  shell: "which docker"
+  register: docker
   changed_when: false
-
-- name: Avi Controller | Requirements | Check for ip addr
-  shell: "which ip"
-  register: ip_addr
-  failed_when: false
-  changed_when: false
-
-- block:
-  - name: Avi Controller | Requirements | Get the management device name | netstat
-    shell: "netstat -ie | grep -B1 {{ controller_ip }} | head -n1 | awk -F ':' '{print $1}'"
-    register: mgmt_device
-    changed_when: false
-  - name: Avi Controller | Requirements | Set the management device name | netstat
-    set_fact:
-      dev_name: "{{ mgmt_device.stdout }}"
-  when: (netstat.rc == 0 and ip_addr.rc == 0) or (netstat.rc == 0 and ip_addr.rc == 1)
 
 - block:
   - name: Avi Controller | Requirements | Get the management device name | ip addr
@@ -30,7 +13,7 @@
   - name: Avi Controller | Requirements | Set the management device name | ip addr
     set_fact:
       dev_name: "{{ mgmt_device.stdout }}"
-  when: ip_addr.rc == 0 and netstat.rc == 1
+  when: dev_name == None
 
 - name: Avi Controller | Requirements | Set maximum core count
   set_fact:
@@ -54,13 +37,9 @@
       - "con_memory_gb <= ansible_memtotal_gb"
   when: not skip_requirements
 
-- name: Avi Controller | Requirements | Clean directories for fresh install
-  file: path="{{ item }}" state=absent
-  when: item != None and fresh_install
-  with_items:
-    - "{{ con_disk_path }}"
-    - "{{ con_metrics_disk_path }}"
-    - "{{ con_logs_disk_path }}"
+- name: Avi Controller | Requirements | Fresh install steps
+  include: fresh_install.yml
+  when: fresh_install
 
 - name: Avi Controller | Requirements | Create directories for controller
   file: path="{{ item }}" state=directory mode=0755

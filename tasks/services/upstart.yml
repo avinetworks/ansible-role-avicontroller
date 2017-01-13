@@ -1,0 +1,13 @@
+---
+- name: Avi Controller | Services | upstart | Deploy the avicontroller service
+  copy: src=upstart/avicontroller.conf dest=/etc/init/avicontroller.conf mode=0644
+  register: avicontroller_service
+
+- name: Avi Controller | Services | upstart | Restart the avicontroller service
+  service: name=avicontroller enabled=yes state=restarted
+  when: avicontroller_service.changed or
+        load_docker_repo.changed or
+        load_docker_hub.changed
+
+- name: Avi Controller | Services | upstart | Start the avicontroller service
+  service: name=avicontroller enabled=yes state=started

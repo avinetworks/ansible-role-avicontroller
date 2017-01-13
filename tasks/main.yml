@@ -7,13 +7,11 @@
   copy: src="{{ setup_json }}" dest="{{ con_disk_path }}/setup.json"
   when: setup_json != None
 
+- name: Avi Controller | Services | Install the Avi Controller executable
+  template: src=avicontroller.j2 dest=/usr/sbin/avicontroller mode=0755
+
 - name: Avi Controller | Perform Docker tasks
   include: docker.yml
 
-- name: Avi Controller | Install the Avi Controller systemd service
-  include: services/systemd.yml
-  when: ansible_service_mgr == 'systemd'
-
-- name: Avi Controller | Install the Avi Controller init.d service
-  include: services/initd.yml
-  when: ansible_service_mgr != 'systemd'
+- name: Avi Controller | Install the Avi Controller services
+  include: services/main.yml
