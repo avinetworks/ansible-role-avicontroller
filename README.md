@@ -35,7 +35,7 @@ Requires Docker to be installed. We have created `avinetworks.docker` to install
 | `skip_requirements` | No | `false` | Skips any requirements for disk space, ram, and cpu. |
 | `portal_http_port` | No | `80` | Port used for the controllers unsecured web interface. |
 | `portal_https_port` | No | `443` | Port used for the controllers secured web interface. |
-| `sec_channel_neg_port` | No | `8443` | Port to be used by the controller communication interface. |
+| `sysint_port` | No | `8443` | Port to be used by the controller communication interface. |
 | `controller_ssh_port` | No | `5098` | Port used to connect directly to the controllers ssh port. |
 | `serviceengine_ssh_port` | No | `5099` | Port used to connect directly to the service engines ssh port. |
 | `controller_cli_port` | No | `5054` | Port used to access the command line interface of the controller. |
