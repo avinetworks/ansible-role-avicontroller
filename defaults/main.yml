@@ -15,7 +15,7 @@ con_image: "avinetworks/controller:{{ con_version }}"
 controller_ip: "{{ ansible_default_ipv4.address }}"
 con_cores: "{{ ansible_processor_cores * ansible_processor_count }}"
 con_memory_gb: "{{ ansible_memtotal_mb // 1024 }}"
-destination_disk: "{{ ansible_mounts|sort(reverse=True, attribute='size_total')|map(attribute='mount')|first}}"
+destination_disk: "{{ ansible_mounts|sort(reverse=True, attribute='size_total')|map(attribute='mount')|first }}"
 con_disk_path: "{{ destination_disk }}/opt/avi/controller/data"
 con_disk_gb: 30
 con_metrics_disk_path: ~

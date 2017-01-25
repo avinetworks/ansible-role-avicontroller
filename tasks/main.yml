@@ -10,6 +10,9 @@
 - name: Avi Controller | Services | Install the Avi Controller executable
   template: src=avicontroller.j2 dest=/usr/sbin/avicontroller mode=0755
 
+- name: Avi Controller | Prepare System
+  include: prepare.yml
+
 - name: Avi Controller | Perform Docker tasks
   include: docker.yml
 
