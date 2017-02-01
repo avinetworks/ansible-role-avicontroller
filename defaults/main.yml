@@ -40,9 +40,9 @@ mounts_extras: []
 mounts_default:
   - "/:/hostroot/"
   - "/var/run/docker.sock:/var/run/docker.sock"
-  - "{{ (con_disk_path == None) | ternary('', con_disk_path ~ ':/vol/') }}"
-  - "{{ (con_metrics_disk_path == None) | ternary('', con_metrics_disk_path ~ ':/vol_metrics/') }}"
-  - "{{ (con_logs_disk_path == None) | ternary('', con_logs_disk_path ~ ':/vol_logs/') }}"
+  - "{{ (con_disk_path == None)|ternary('', con_disk_path ~ ':/vol/') }}"
+  - "{{ (con_metrics_disk_path == None)|ternary('', con_metrics_disk_path ~ ':/vol_metrics/') }}"
+  - "{{ (con_logs_disk_path == None)|ternary('', con_logs_disk_path ~ ':/vol_logs/') }}"
 mounts_all: "{{ mounts_extras + mounts_default}}"
 mounts_string: "{% for mount_var in mounts_all|reject('match', '^$') %} -v {{ mount_var }}{% endfor %}"
 
@@ -51,12 +51,12 @@ mounts_string: "{% for mount_var in mounts_all|reject('match', '^$') %} -v {{ mo
 env_variables_extras: []
 env_variables_default:
   - "CONTAINER_NAME=avicontroller"
-  - "MANAGEMENT_IP={{ controller_ip | string}}"
+  - "MANAGEMENT_IP={{ controller_ip|string}}"
   - "NUM_CPU={{ con_cores }}"
   - "NUM_MEMG={{ con_memory_gb }}"
-  - "{{ (con_disk_gb == None) | ternary('', 'DISK_GB=' + con_disk_gb|string) }}"
-  - "{{ (con_metrics_disk_gb == None) | ternary('', 'METRICS_DISK_GB=' + con_metrics_disk_gb|string) }}"
-  - "{{ (con_logs_disk_gb == None) | ternary('', 'LOGS_DISK_GB=' + con_logs_disk_gb|string) }}"
+  - "{{ (con_disk_gb == None)|ternary('', 'DISK_GB=' + con_disk_gb|string) }}"
+  - "{{ (con_metrics_disk_gb == None)|ternary('', 'METRICS_DISK_GB=' + con_metrics_disk_gb|string) }}"
+  - "{{ (con_logs_disk_gb == None)|ternary('', 'LOGS_DISK_GB=' + con_logs_disk_gb|string) }}"
 env_variables_all: "{{ env_variables_extras + env_variables_default }}"
 env_variables_string: "{% for env_var in env_variables_all|reject('match', '^$') %} -e {{ env_var }}{% endfor %}"
 
