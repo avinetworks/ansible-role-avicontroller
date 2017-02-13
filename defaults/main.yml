@@ -13,13 +13,11 @@ con_image: "avinetworks/controller:{{ con_version }}"
 
 # parameters for the CSP deployment
 con_qcow_image_file: ~
-con_qcow_image_name: "{{ con_qcow_image_file | basename }}"
+con_qcow_image_name: "{{ con_qcow_image_file|basename }}"
 csp_user: ~
 csp_password: ~
 csp_con_mgmt_mask: ~
 csp_con_default_gw: ~
-
-
 
 # standard parameters
 controller_ip: "{{ ansible_default_ipv4.address }}"
