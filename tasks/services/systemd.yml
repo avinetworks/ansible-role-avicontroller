@@ -1,26 +1,41 @@
 ---
+# This task deploys the avicontroller service used for the 16.x versions of Avi
 - name: Avi Controller | Services | systemd | 16.x | Deploy the avicontroller service
   template:
     src: 16.x/avicontroller.service.j2
     dest: /etc/systemd/system/avicontroller.service
     mode: 0644
   register: avicontroller_service
-  when: con_version|version_compare('17.0.0', '<')
+  when: old_service
 
+# This task deploys the avicontroller service used for the 17.x versions of Avi
 - name: Avi Controller | Services | systemd | 17.x+ | Deploy the avicontroller service
   copy:
     src: systemd/avicontroller.service
     dest: /etc/systemd/system/avicontroller.service
     mode: 0644
   register: avicontroller_service
-  when: con_version|version_compare('17.0.0', '>=')
+  when: new_service
 
-# Standard steps
-- name: Avi Controller | Services | systemd | Restart the avicontroller service
-  systemd: daemon_reload=yes name=avicontroller enabled=yes state=restarted
-  when: avicontroller_service.changed or
-        load_docker_repo.changed or
-        load_docker_hub.changed
+# We will perform a daemon-reload and make sure that the service has started
+# These tasks are for Ansible 2.2 and above support
+- block:
+    - name: Avi Controller | Services | systemd | Ansible >= 2.2 | Restart the avicontroller service
+      systemd: daemon_reload=yes name=avicontroller enabled=yes state=restarted
+      when: avicontroller_service.changed or load_docker_repo.changed or load_docker_hub.changed
+    - name: Avi Controller | Services | systemd | Ansible >= 2.2 | Ansible Start the avicontroller service
+      systemd: daemon_reload=yes name=avicontroller enabled=yes state=started
+  when: ansible_version >= 2.2
 
-- name: Avi Controller | Services | systemd | Start the avicontroller service
-  systemd: daemon_reload=yes name=avicontroller enabled=yes state=started
+# These tasks are for Ansible 2.1 and below support.
+- block:
+    - name: Avi Controller | Services | systemd | Ansible <= 2.1 | Perform Daemon Reload
+      shell: systemctl daemon-reload
+      register: daemon_reload
+      changed_when: false
+    - name: Avi Controller | Services | systemd | Ansible <= 2.1 | Restart the avicontroller service
+      service: name=avicontroller enabled=yes state=started
+      when: avicontroller_service.changed or load_docker_repo.changed or load_docker_hub.changed
+    - name: Avi Controller | Services | systemd | Ansible <= 2.1 | Ansible Start the avicontroller service
+      service: name=avicontroller enabled=yes state=started
+  when: ansible_version <= 2.1

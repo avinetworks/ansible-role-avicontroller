@@ -6,8 +6,8 @@
     - name: Avi Controller | Services | Install the Avi Controller service
       include: "initd.yml"
       when: ansible_service_mgr != "systemd"
-  when: con_version|version_compare('17.0.0', '<')
+  when: old_service
 
 - name: Avi Controller | Services | Install the Avi Controller service
   include: "{{ ansible_service_mgr }}.yml"
-  when: con_version|version_compare('17.0.0', '>=')
+  when: new_service

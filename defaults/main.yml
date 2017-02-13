@@ -1,4 +1,4 @@
----
+ne seoncd---
 # defaults file for avinetworks.avicontroller
 
 # parameters for use when deploying as package
@@ -10,6 +10,16 @@ package_dest: /tmp/controller_docker.tgz
 docker_repo: ~
 con_version: latest
 con_image: "avinetworks/controller:{{ con_version }}"
+
+# parameters for the CSP deployment
+con_qcow_image_file: ~
+con_qcow_image_name: "{{ con_qcow_image_file | basename }}"
+csp_user: ~
+csp_password: ~
+csp_con_mgmt_mask: ~
+csp_con_default_gw: ~
+
+
 
 # standard parameters
 controller_ip: "{{ ansible_default_ipv4.address }}"

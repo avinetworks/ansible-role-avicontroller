@@ -17,6 +17,11 @@
   include: docker/custom_repo.yml
   when: docker_repo != None and not package_deploy
 
+- name: Avi Controller | Set service facts for deploy
+  set_fact:
+    old_service: "{{ con_version|version_compare('17.0.0', '<') or con_version == 'latest' }}"
+    new_service: "{{ con_version|version_compare('17.0.0', '>=') }}"
+
 - name: Avi Controller | Docker | Get our desired docker image id.
   shell: "docker images -q {{ con_image }}"
   changed_when: false
