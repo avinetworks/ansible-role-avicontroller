@@ -69,19 +69,19 @@
   assert:
     that:
       - con_disk_gb != None
-      - con_disk_path_space.stdout > con_disk_gb
+      - con_disk_path_space.stdout|int > con_disk_gb|int
   when: con_disk_path != None and not skip_requirements
 
 - name: Avi Controller | Requirements | Check if there is enough space for controller metrics disk path
   assert:
     that:
       - con_metrics_disk_gb != None
-      - con_metrics_disk_path_space.stdout | int > con_metrics_disk_gb | int
+      - con_metrics_disk_path_space.stdout|int > con_metrics_disk_gb|int
   when: con_metrics_disk_path != None and not skip_requirements
 
 - name: Avi Controller | Requirements | Check if there is enough space for controller logs disk path
   assert:
     that:
       - con_logs_disk_gb != None
-      - con_logs_disk_path_space.stdout | int > con_logs_disk_gb | int
+      - con_logs_disk_path_space.stdout|int > con_logs_disk_gb|int
   when: con_logs_disk_path != None and not skip_requirements
