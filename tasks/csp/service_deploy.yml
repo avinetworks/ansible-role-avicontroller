@@ -1,7 +1,7 @@
 ---
 - name: Avi Controller | CSP | Service deploy | Check if service already exists
   uri:
-    url: "https://{{ inventory_hostname }}/api/running/services/service/{{ csp_service_name }}"
+    url: "https://{{ inventory_hostname }}/api/running/services/service/{{ csp_con_service_name }}"
     method: GET
     user: "{{ csp_user }}"
     password: "{{ csp_password }}"
@@ -33,13 +33,13 @@
     body_format: json
     body:
       service:
-        disk_size: "{{ csp_disk_size|int }}"
-        name: "{{ csp_service_name }}"
+        disk_size: "{{ csp_con_disk_size|int }}"
+        name: "{{ csp_con_service_name }}"
         power: 'on'
         iso_name: "{{ csp_con_qcow_image_name }}"
         day0_filename: "{{ csp_con_qcow_metafile_name }}"
-        numcpu: "{{ csp_num_cpu|int }}"
-        memory: "{{ csp_memory|int }}"
+        numcpu: "{{ csp_con_num_cpu|int }}"
+        memory: "{{ csp_con_memory|int }}"
         vnics:
           vnic:
             - nic: '0'

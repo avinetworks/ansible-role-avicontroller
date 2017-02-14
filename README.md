@@ -62,10 +62,10 @@ Requires Docker to be installed. We have created `avinetworks.docker` to install
 | csp_con_qcow_image_file | No | `controller.qcow` | Relative or absolute location of the controller qcow |
 | csp_con_mgmt_mask | No | `None` | Subnet mask that the controller will require. |
 | csp_con_default_gw | No | `None` | Default gateway for the controller |
-| csp_disk_size | No | `64` | Amount of disk space for the controller |
-| csp_service_name | No | `avi-controller` | Name of the service to be created on the CSP |
-| csp_num_cpu | No | `4` | Number of CPUs to be allocated to the Controller |
-| csp_memory | No | `16` | Amount of memory in GB allocated to the Controller |
+| csp_con_disk_size | No | `64` | Amount of disk space for the controller |
+| csp_con_service_name | No | `avi-controller` | Name of the service to be created on the CSP |
+| csp_con_num_cpu | No | `4` | Number of CPUs to be allocated to the Controller |
+| csp_con_memory | No | `16` | Amount of memory in GB allocated to the Controller |
 
 ### Parameter Override Variables
 However, you are able to provide these parameters another way. Using the following variables. This will allow the user to customize all values.  

@@ -17,12 +17,13 @@ csp_user: ~
 csp_password: ~
 csp_con_qcow_image_file: controller.qcow
 csp_con_qcow_image_name: "{{ csp_con_qcow_image_file|basename }}"
+csp_con_mgmt_ip: ~
 csp_con_mgmt_mask: ~
 csp_con_default_gw: ~
-csp_disk_size: 64
-csp_service_name: avi-controller
-csp_num_cpu: 4
-csp_memory: 16
+csp_con_disk_size: 64
+csp_con_service_name: avi-controller
+csp_con_num_cpu: 4
+csp_con_memory: 16
 
 # standard parameters
 controller_ip: "{{ ansible_default_ipv4.address }}"

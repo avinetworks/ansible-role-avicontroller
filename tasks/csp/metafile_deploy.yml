@@ -1,7 +1,7 @@
 ---
 - name: Avi Controller | CSP | Metafile deploy | Setting the Avi metafile name
   set_fact:
-    csp_con_metafile_name: avi_meta_{{ csp_service_name }}.yml
+    csp_con_metafile_name: avi_meta_{{ csp_con_service_name }}.yml
 
 - name: Avi Controller | CSP | Metafile deploy | Information
   debug: msg="Your metafile has been named {{ csp_con_metafile_name }}"
