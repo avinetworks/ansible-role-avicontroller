@@ -12,12 +12,17 @@ con_version: latest
 con_image: "avinetworks/controller:{{ con_version }}"
 
 # parameters for the CSP deployment
-con_qcow_image_file: ~
-con_qcow_image_name: "{{ con_qcow_image_file|basename }}"
+csp_deploy: false
 csp_user: ~
 csp_password: ~
+csp_con_qcow_image_file: controller.qcow
+csp_con_qcow_image_name: "{{ csp_con_qcow_image_file|basename }}"
 csp_con_mgmt_mask: ~
 csp_con_default_gw: ~
+csp_disk_size: 64
+csp_service_name: avi-controller
+csp_num_cpu: 4
+csp_memory: 16
 
 # standard parameters
 controller_ip: "{{ ansible_default_ipv4.address }}"

@@ -1,0 +1,28 @@
+---
+- name: Avi Controller | CSP | Requirements | Check variables
+  assert:
+    that:
+      - "{{ item }} != None"
+    msg: "{{ item }} must be provided"
+  with_items:
+    - csp_user
+    - csp_password
+    - csp_con_qcow_image_file
+    - csp_con_mgmt_mask
+    - csp_con_default_gw
+    - csp_disk_size
+    - csp_num_cpu
+    - csp_memory
+
+- name: Avi Controller | CSP | Requirements | Validate Sizing
+  assert:
+    that:
+      - "{{ item.expr }}"
+    msg: "{{ item.msg }}"
+  with_items:
+    - expr: csp_num_cpu|int >= 4
+      msg: "Must have 4 or more CPU"
+    - expr: csp_memory|int >= 16
+      msg: "Must have 12GB or more memory"
+    - expr: csp_disk_size|int >= 64
+      msg: "Must have 64GB or more disk size"

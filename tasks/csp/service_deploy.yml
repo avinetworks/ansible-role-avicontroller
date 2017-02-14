@@ -1,0 +1,53 @@
+---
+- name: Avi Controller | CSP | Service deploy | Check if service already exists
+  uri:
+    url: "https://{{ inventory_hostname }}/api/running/services/service/{{ csp_service_name }}"
+    method: GET
+    user: "{{ csp_user }}"
+    password: "{{ csp_password }}"
+    force_basic_auth: yes
+    headers:
+      Accept: '*/*'
+    validate_certs: false
+    return_content: true
+  failed_when: false
+  register: csp_con_service_exists
+  delegate_to: localhost
+
+- block:
+    - set_fact:
+        csp_con_service_exists_json: "{{ csp_con_service_exists.content|from_json }}"
+    - debug: msg="Service {{ csp_con_service_exists_json['vsb:service'].name }} already exists."
+  when: csp_con_service_exists.status == 200
+
+- name: Avi Controller | CSP | Service deploy | Create the service
+  uri:
+    url: "https://{{ inventory_hostname }}/api/running/services/"
+    method: POST
+    user: "{{ csp_user }}"
+    password: "{{ csp_password }}"
+    force_basic_auth: yes
+    headers:
+      Accept: '*/*'
+    validate_certs: false
+    body_format: json
+    body:
+      service:
+        disk_size: "{{ csp_disk_size|int }}"
+        name: "{{ csp_service_name }}"
+        power: 'on'
+        iso_name: "{{ csp_con_qcow_image_name }}"
+        day0_filename: "{{ csp_con_qcow_metafile_name }}"
+        numcpu: "{{ csp_num_cpu|int }}"
+        memory: "{{ csp_memory|int }}"
+        vnics:
+          vnic:
+            - nic: '0'
+              type: access
+              tagged: 'false'
+              network_name: enp1s0f0
+    return_content: true
+  failed_when: false
+  register: csp_avi_controller_service
+  delegate_to: localhost
+  when: csp_con_service_exists.status != 200

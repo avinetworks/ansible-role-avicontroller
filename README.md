@@ -11,14 +11,23 @@ Requires Docker to be installed. We have created `avinetworks.docker` to install
 
 ## Role Variables
 
+### Package Deploy Variables
 | Variable | Required | Default | Comments |
-|-----------------------|----------|-----------|---------|
+|----------|----------|---------|----------|
 | `package_deploy` | No | `false` | Set to true to deploy via package   |
 | `package_source` | No | `controller_docker.tgz` | Source location of the docker tgz |
 | `package_dest` | No | `/tmp/controller_docker.tgz` | Destination location on the remote server |
+
+### Docker Hub and Docker Repo Variables
+| Variable | Required | Default | Comments |
+|----------|----------|---------|----------|
 | `docker_repo` | No | `None` | If using a local repository please enter it here. |
 | `con_version` | No | `latest` | Version of the Avi Controller package you want to deploy. |
 | `con_image` | No | `avinetworks/controller:{{ con_version }}` | Full name of the controller image. |
+
+### Docker Install Variables
+| Variable | Required | Default | Comments |
+|----------|----------|---------|----------|
 | `con_cores` | No | `{{ ansible_processor_cores * ansible_processor_count }}` | How many cores the controller will use. |
 | `con_memory_gb` | No | `{{ ansible_memtotal_mb // 1024 }}` | How much memory the controller will use.  |
 | `destination_disk` | No | `auto-detect based on ansible_mounts largest sized disk` | The disk that the controller data will be installed |
@@ -43,6 +52,20 @@ Requires Docker to be installed. We have created `avinetworks.docker` to install
 | `mounts_extras` | No | `[]` | Extra mounting points to be used by the controller. |
 | `env_variables_extras` | No | `[]` | Extra environment variables to be used by the controller. |
 | `ports_list_extras` | No | `[]` | Extra ports to be used by the controller. |
+
+### CSP Deployment Variables
+| Variable | Required | Default | Comments |
+|----------|----------|---------|----------|
+| csp_deploy | No | `false` | Set to true if deploying on CSP |
+| csp_user | No | `None` | Username that will be used to connect to the CSP server |
+| csp_password | No | `None` | Password required to authenticate the user |
+| csp_con_qcow_image_file | No | `controller.qcow` | Relative or absolute location of the controller qcow |
+| csp_con_mgmt_mask | No | `None` | Subnet mask that the controller will require. |
+| csp_con_default_gw | No | `None` | Default gateway for the controller |
+| csp_disk_size | No | `64` | Amount of disk space for the controller |
+| csp_service_name | No | `avi-controller` | Name of the service to be created on the CSP |
+| csp_num_cpu | No | `4` | Number of CPUs to be allocated to the Controller |
+| csp_memory | No | `16` | Amount of memory in GB allocated to the Controller |
 
 ### Parameter Override Variables
 However, you are able to provide these parameters another way. Using the following variables. This will allow the user to customize all values.  
@@ -97,6 +120,22 @@ The following is an example with minimum parameters.
     - role: avinetworks.avicontroller
 ```
 
+### CSP Deployment Example
+**Note:** When running. `gather_facts` needs to be set to `false`, failure to do so will cause Ansible failure on first step.
+```
+---
+- hosts: csp_devices
+  gather_facts: false
+  roles:
+    - role: avinetworks.avicontroller
+      csp_deploy: true
+      csp_user: admin
+      csp_password: password
+      csp_con_qcow_image_file: avi-controller.qcow2
+      csp_con_mgmt_mask: 255.255.255.0
+      csp_con_default_gw: 10.128.2.1
+      csp_service_name: avi-controller
+```
 
 ## License
 
