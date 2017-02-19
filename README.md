@@ -54,18 +54,20 @@ Requires Docker to be installed. We have created `avinetworks.docker` to install
 | `ports_list_extras` | No | `[]` | Extra ports to be used by the controller. |
 
 ### CSP Deployment Variables
+These are only marked required, for when you are using CSP Deployment.   
 | Variable | Required | Default | Comments |
 |----------|----------|---------|----------|
-| csp_deploy | No | `false` | Set to true if deploying on CSP |
-| csp_user | No | `None` | Username that will be used to connect to the CSP server |
-| csp_password | No | `None` | Password required to authenticate the user |
-| csp_con_qcow_image_file | No | `controller.qcow` | Relative or absolute location of the controller qcow |
-| csp_con_mgmt_mask | No | `None` | Subnet mask that the controller will require. |
-| csp_con_default_gw | No | `None` | Default gateway for the controller |
-| csp_con_disk_size | No | `64` | Amount of disk space for the controller |
-| csp_con_service_name | No | `avi-controller` | Name of the service to be created on the CSP |
-| csp_con_num_cpu | No | `4` | Number of CPUs to be allocated to the Controller |
-| csp_con_memory | No | `16` | Amount of memory in GB allocated to the Controller |
+| `csp_deploy` | Yes | `false` | Set to true if deploying on CSP |
+| `csp_user` | Yes | `None` | Username that will be used to connect to the CSP server |
+| `csp_password` | Yes | `None` | Password required to authenticate the user |
+| `csp_con_qcow_image_file` | No | `controller.qcow` | Relative or absolute location of the controller qcow |
+| `csp_con_mgmt_ip` | Yes | `None` | IP of the controller on the management network. |
+| `csp_con_mgmt_mask` | Yes | `None` | Subnet mask that the controller will require. |
+| `csp_con_default_gw` | Yes | `None` | Default gateway for the controller |
+| `csp_con_disk_size` | No | `64` | Amount of disk space in GB for the controller |
+| `csp_con_service_name` | No | `avi-controller` | Name of the service to be created on the CSP |
+| `csp_con_num_cpu` | No | `4` | Number of CPUs to be allocated to the Controller |
+| `csp_con_memory` | No | `16` | Amount of memory in GB allocated to the Controller |
 
 ### Parameter Override Variables
 However, you are able to provide these parameters another way. Using the following variables. This will allow the user to customize all values.  
@@ -132,9 +134,10 @@ The following is an example with minimum parameters.
       csp_user: admin
       csp_password: password
       csp_con_qcow_image_file: avi-controller.qcow2
+      csp_con_mgmt_ip: 10.128.2.20
       csp_con_mgmt_mask: 255.255.255.0
       csp_con_default_gw: 10.128.2.1
-      csp_service_name: avi-controller
+      csp_con_service_name: avi-controller
 ```
 
 ## License

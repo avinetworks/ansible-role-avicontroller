@@ -2,16 +2,16 @@
 # These steps will allow a user to specify a private docker repository and login to that
 # respository to pull docker images.
 #
-- name: Avi Controller | Docker | Log into the custom docker repository
-  shell: "docker login -u {{ docker_repo_user }} -p {{ docker_repo_password}} {{ docker_repo }}"
-  register: docker_repo_login
-  when:
-    - docker_match.stdout == "" or con_version == "latest"
-    - docker_repo_user != None
-    - docker_repo_password != None
-
-- name: Avi Controller | Docker | Load the image from custom docker repository
-  shell: "docker pull {{ docker_repo }}/{{ con_image }}"
-  register: load_docker_repo
-  changed_when: "'Status: Image is up to date' not in load_docker_repo.stdout"
+- block:
+    - name: Avi Controller | Docker | Log into the custom docker repository
+      shell: "docker login -u {{ docker_repo_user }} -p {{ docker_repo_password}} {{ docker_repo }}"
+      register: docker_repo_login
+      when:
+        - docker_repo_user != None
+        - docker_repo_password != None
+    - name: Avi Controller | Docker | Load the image from custom docker repository
+      shell: "docker pull {{ docker_repo }}/{{ con_image }}"
+      register: load_docker_repo
+      changed_when: "'Status: Image is up to date' not in load_docker_repo.stdout"
+      notify: Avi Controller | Services | Restart the avicontroller service
   when: docker_match.stdout == "" or con_version == "latest"

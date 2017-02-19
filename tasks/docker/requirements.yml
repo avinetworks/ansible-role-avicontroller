@@ -15,26 +15,18 @@
       dev_name: "{{ mgmt_device.stdout }}"
   when: dev_name == None
 
-- name: Avi Controller | Requirements | Set maximum core count
+- name: Avi Controller | Requirements | Set facts
   set_fact:
     max_cores: "{{ ansible_processor_cores * ansible_processor_count }}"
-
-- name: Avi Controller | Requirements | Controller needs more than 4 cores.
-  assert:
-    that:
-      - "max_cores|int >= 4"
-      - "con_cores|int <= max_cores|int"
-  when: not skip_requirements
-
-- name: Avi Controller | Requirements | Set the ansible_memtotal_gb var
-  set_fact:
     ansible_memtotal_gb: "{{ ansible_memtotal_mb // 1024 }}"
 
-- name: Avi Controller | Requirements | Controller needs between 12GB and {{ ansible_memtotal_mb // 1024 }}GB memory.
+- name: Avi Controller | Requirements | Validate Parameters
   assert:
     that:
       - "ansible_memtotal_mb >= 12288"
       - "con_memory_gb|int <= ansible_memtotal_gb|int"
+      - "max_cores|int >= 4"
+      - "con_cores|int <= max_cores|int"
   when: not skip_requirements
 
 - name: Avi Controller | Requirements | Fresh install steps
@@ -65,23 +57,23 @@
   register: con_metrics_disk_path_space
   when: con_metrics_disk_path != None
 
-- name: Avi Controller | Requirements | Check if there is enough space for controller disk path
-  assert:
-    that:
-      - con_disk_gb != None
-      - con_disk_path_space.stdout|int > con_disk_gb|int
-  when: con_disk_path != None and not skip_requirements
-
-- name: Avi Controller | Requirements | Check if there is enough space for controller metrics disk path
-  assert:
-    that:
-      - con_metrics_disk_gb != None
-      - con_metrics_disk_path_space.stdout|int > con_metrics_disk_gb|int
-  when: con_metrics_disk_path != None and not skip_requirements
-
-- name: Avi Controller | Requirements | Check if there is enough space for controller logs disk path
-  assert:
-    that:
-      - con_logs_disk_gb != None
-      - con_logs_disk_path_space.stdout|int > con_logs_disk_gb|int
-  when: con_logs_disk_path != None and not skip_requirements
+- block:
+    - name: Avi Controller | Requirements | Check if there is enough space for controller disk path
+      assert:
+        that:
+          - con_disk_gb != None
+          - con_disk_path_space.stdout|int > con_disk_gb|int
+      when: con_disk_path != None
+    - name: Avi Controller | Requirements | Check if there is enough space for controller metrics disk path
+      assert:
+        that:
+          - con_metrics_disk_gb != None
+          - con_metrics_disk_path_space.stdout|int > con_metrics_disk_gb|int
+      when: con_metrics_disk_path != None
+    - name: Avi Controller | Requirements | Check if there is enough space for controller logs disk path
+      assert:
+        that:
+          - con_logs_disk_gb != None
+          - con_logs_disk_path_space.stdout|int > con_logs_disk_gb|int
+      when: con_logs_disk_path != None
+  when: not skip_requirements

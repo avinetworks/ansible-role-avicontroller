@@ -14,6 +14,7 @@
     - csp_con_disk_size
     - csp_con_num_cpu
     - csp_con_memory
+  when: not skip_requirements
 
 - name: Avi Controller | CSP | Requirements | Validate Sizing
   assert:
@@ -27,3 +28,4 @@
       msg: "Must have 12GB or more memory"
     - expr: csp_con_disk_size|int >= 64
       msg: "Must have 64GB or more disk size"
+  when: not skip_requirements

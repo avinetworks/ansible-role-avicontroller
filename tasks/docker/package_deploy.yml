@@ -1,6 +1,5 @@
 ---
 # This set of tasks is only used when package_deploy is true
-
 - name: Avi Controller | Docker | Deploy the image from the package
   copy: src={{ package_source }} dest={{ package_dest }}
 

@@ -1,6 +1,12 @@
 ---
 # defaults file for avinetworks.avicontroller
 
+# set the type of deployment
+deploy_type: docker
+
+# standard parameters
+skip_requirements: false
+
 # parameters for use when deploying as package
 package_deploy: false
 package_source: controller_docker.tgz
@@ -8,11 +14,12 @@ package_dest: /tmp/controller_docker.tgz
 
 # parameters for use when pulling from docker hub or docker repo
 docker_repo: ~
+docker_repo_user: ~
+docker_repo_password: ~
 con_version: latest
 con_image: "avinetworks/controller:{{ con_version }}"
 
 # parameters for the CSP deployment
-csp_deploy: false
 csp_user: ~
 csp_password: ~
 csp_con_qcow_image_file: controller.qcow
@@ -24,8 +31,14 @@ csp_con_disk_size: 64
 csp_con_service_name: avi-controller
 csp_con_num_cpu: 4
 csp_con_memory: 16
+csp_con_vnics:
+  - nic: '0'
+    type: access
+    tagged: 'false'
+    network_name: enp1s0f0
 
-# standard parameters
+# docker deployment parameters
+fresh_install: false
 controller_ip: "{{ ansible_default_ipv4.address }}"
 con_cores: "{{ ansible_processor_cores * ansible_processor_count }}"
 con_memory_gb: "{{ ansible_memtotal_mb // 1024 }}"
@@ -38,8 +51,6 @@ con_logs_disk_path: ~
 con_logs_disk_gb: ~
 dev_name: ~
 setup_json: ~
-fresh_install: false
-skip_requirements: false
 portal_http_port: 80
 portal_https_port: 443
 sysint_port: 8443
@@ -86,4 +97,4 @@ ports_list_all: "{{ ports_list_extras + ports_list_default }}"
 ports_list_string: "{% for port in ports_list_all|reject('match', '^$') %} -p {{ port }}{% endfor %}"
 
 # !!!! BEWARE: This is to completely override everything passed into the service template for the docker run. DON'T EDIT THIS UNLESS YOU KNOW WHAT YOUR DOING!!!!!
-docker_run_params: "--name=avicontroller {{ ports_list_string }} -d --privileged {{ env_variables_string }} {{ mounts_string }} {{ con_image }}"
+docker_run_params: "--name=avicontroller{{ ports_list_string }} -d --privileged{{ env_variables_string }}{{ mounts_string }} {{ con_image }}"

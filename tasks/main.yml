@@ -1,26 +1,4 @@
 ---
 # tasks file for avinetworks.avicontroller
-- name: Avi Controller | CSP Deployment
-  include: csp_deploy.yml
-  when: csp_deploy
-
-- block:
-    - name: Avi Controller | Check minimum requirements
-      include: requirements.yml
-
-    - name: Avi Controller | Copy setup.json to controller
-      copy: src="{{ setup_json }}" dest="{{ con_disk_path }}/setup.json"
-      when: setup_json != None
-
-    - name: Avi Controller | Services | Install the Avi Controller executable
-      template: src=avicontroller.j2 dest=/usr/sbin/avicontroller mode=0755
-
-    - name: Avi Controller | Prepare System
-      include: prepare.yml
-
-    - name: Avi Controller | Perform Docker tasks
-      include: docker.yml
-
-    - name: Avi Controller | Install the Avi Controller services
-      include: services/main.yml
-  when: not csp_deploy
+- name: Avi Controller | Deployment
+  include: "{{ deploy_type }}/main.yml"

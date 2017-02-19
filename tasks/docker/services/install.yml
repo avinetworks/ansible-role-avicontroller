@@ -1,0 +1,17 @@
+---
+- block:
+    - name: Avi Controller | Services | init.d | 16.x | Install the Avi Controller service
+      include: "systemd/install.yml"
+      when: ansible_service_mgr == "systemd"
+    - name: Avi Controller | Services | init.d | 16.x | Install the Avi Controller service
+      include: "initd/install.yml"
+      when: ansible_service_mgr != "systemd"
+  when: old_service
+
+- block:
+    - name: Avi Controller | Services | 17.x | Install the Avi Controller service file
+      template: src=avicontroller.j2 dest=/usr/sbin/avicontroller mode=0755
+      notify: Avi Controller | Services | Restart the avise service
+    - name: Avi Controller | Services | {{ ansible_service_mgr }} | 17.x | Install the Avi Controller service
+      include: "{{ ansible_service_mgr }}/install.yml"
+  when: new_service
