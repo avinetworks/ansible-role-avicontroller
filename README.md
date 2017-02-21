@@ -16,6 +16,8 @@ Requires Docker to be installed. We have created `avinetworks.docker` to install
 | `con_deploy_type` | No | `docker` | Sets the type of deployment that should be triggered. Valid options: `docker`, `csp` |
 
 ### Standard Parameters
+| Variable | Required | Default | Comments |
+|----------|----------|---------|----------|
 | `con_skip_requirements` | No | `false` | Skips any requirements for disk space, ram, and cpu. |
 
 ### Package Deploy Variables
@@ -62,7 +64,8 @@ Requires Docker to be installed. We have created `avinetworks.docker` to install
 | `con_ports_list_extras` | No | `[]` | Extra ports to be used by the controller. |
 
 ### CSP Deployment Variables
-These are only marked required, for when you are using CSP Deployment.   
+These are only marked required, for when you are using CSP Deployment.
+
 | Variable | Required | Default | Comments |
 |----------|----------|---------|----------|
 | `con_csp_user` | Yes | `None` | Username that will be used to connect to the CSP server |
