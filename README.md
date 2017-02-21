@@ -152,7 +152,7 @@ The following is an example with minimum parameters.
 
 ## License
 
-MIT
+BSD
 
 ## Author Information
 
