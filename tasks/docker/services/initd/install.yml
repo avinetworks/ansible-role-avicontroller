@@ -1,17 +1,23 @@
 ---
 - name: Avi Controller | Services | init.d | Set container env for non-systemd
   set_fact:
-    env_variables_extras: "{{ env_variables_extras + ['NON_SYSTEMD=1'] }}"
+    con_env_variables_extras: "{{ env_variables_extras + ['NON_SYSTEMD=1'] }}"
 
-- name: Avi Controller | Services | init.d | 16.x | Deploy the avicontroller service
-  template: src=16.x/avicontroller.j2 dest=/etc/init.d/avicontroller mode=0755
-  register: avicontroller_service
-  when: old_service
+- block:
+    - name: Avi Controller | Services | init.d | 16.x | Deploy the avicontroller service
+      template: src=16.x/avicontroller.j2 dest=/etc/init.d/avicontroller mode=0755
+      register: avicontroller_service_16
+      notify: Avi Controller | Services | init.d | Restart the avicontroller_watcher service
+    - set_fact: avicontroller_service={{ avicontroller_service_16 }}
+  when: con_old_service
 
-- name: Avi Controller | Services | init.d | 17.x | Deploy the avicontroller service
-  copy: src=init/avicontroller dest=/etc/init.d/avicontroller mode=0755
-  register: avicontroller_service
-  when: new_service
+- block:
+    - name: Avi Controller | Services | init.d | 17.x | Deploy the avicontroller service
+      copy: src=init/avicontroller dest=/etc/init.d/avicontroller mode=0755
+      register: avicontroller_service_17
+      notify: Avi Controller | Services | init.d | Restart the avicontroller_watcher service
+    - set_fact: avicontroller_service={{ avicontroller_service_16 }}
+  when: con_new_service
 
 - name: Avi Controller | Services | init.d | Deploy the avicontroller_watcher.sh script
   copy: src=init/avicontroller_watcher.sh dest=/etc/init.d/avicontroller_watcher.sh mode=0755
@@ -20,6 +26,7 @@
 - name: Avi Controller | Services | init.d | Deploy the avicontroller_watcher service
   copy: src=init/avicontroller_watcher dest=/etc/init.d/avicontroller_watcher mode=0755
   register: avicontroller_watcher_service
+  notify: Avi Controller | Services | init.d | Restart the avicontroller_watcher service
 
 - name: Avi Controller | Services | init.d | Deploying avicontroller_watcher rc links
   file: src=/etc/init.d/avicontroller_watcher dest={{ item }} state=link
@@ -31,13 +38,3 @@
     - /etc/rc4.d/S99avicontroller_watcher
     - /etc/rc5.d/S99avicontroller_watcher
     - /etc/rc6.d/K99avicontroller_watcher
-
-- name: Avi Controller | Services | init.d | Restart the avicontroller_watcher service
-  service: name=avicontroller_watcher enabled=yes state=restarted
-  when: avicontroller_service.changed or
-        avicontroller_watcher_service.changed or
-        load_docker_repo.changed or
-        load_docker_hub.changed
-
-- name: Avi Controller | Services | init.d | Start the avicontroller_watcher service
-  service: name=avicontroller_watcher enabled=yes state=started

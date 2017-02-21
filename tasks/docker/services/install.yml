@@ -6,7 +6,7 @@
     - name: Avi Controller | Services | init.d | 16.x | Install the Avi Controller service
       include: "initd/install.yml"
       when: ansible_service_mgr != "systemd"
-  when: old_service
+  when: con_old_service
 
 - block:
     - name: Avi Controller | Services | 17.x | Install the Avi Controller service file
@@ -14,4 +14,8 @@
       notify: Avi Controller | Services | Restart the avise service
     - name: Avi Controller | Services | {{ ansible_service_mgr }} | 17.x | Install the Avi Controller service
       include: "{{ ansible_service_mgr }}/install.yml"
-  when: new_service
+  when: con_new_service
+
+- name: Avi Controller | Services | {{ ansible_service_mgr }} | Start the service since it's not running |
+  service: name=avicontroller enabled=yes state=started
+  when: con_desired_running.stdout == ""

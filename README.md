@@ -10,27 +10,36 @@ Using this module you are able to install the Avi Vantage Controlller, to your s
 Requires Docker to be installed. We have created `avinetworks.docker` to install Docker on a host. Please run that role first, or manually install Docker.
 
 ## Role Variables
+### Setting Deployment type
+| Variable | Required | Default | Comments |
+|----------|----------|---------|----------|
+| `con_deploy_type` | No | `docker` | Sets the type of deployment that should be triggered. Valid options: `docker`, `csp` |
+
+### Standard Parameters
+| `con_skip_requirements` | No | `false` | Skips any requirements for disk space, ram, and cpu. |
 
 ### Package Deploy Variables
 | Variable | Required | Default | Comments |
 |----------|----------|---------|----------|
-| `package_deploy` | No | `false` | Set to true to deploy via package   |
-| `package_source` | No | `controller_docker.tgz` | Source location of the docker tgz |
-| `package_dest` | No | `/tmp/controller_docker.tgz` | Destination location on the remote server |
+| `con_package_deploy` | No | `false` | Set to true to deploy via package   |
+| `con_package_source` | No | `controller_docker.tgz` | Source location of the docker tgz |
+| `con_package_dest` | No | `/tmp/controller_docker.tgz` | Destination location on the remote server |
 
 ### Docker Hub and Docker Repo Variables
 | Variable | Required | Default | Comments |
 |----------|----------|---------|----------|
-| `docker_repo` | No | `None` | If using a local repository please enter it here. |
+| `con_docker_repo` | No | `None` | If using a local repository please enter it here. |
 | `con_version` | No | `latest` | Version of the Avi Controller package you want to deploy. |
 | `con_image` | No | `avinetworks/controller:{{ con_version }}` | Full name of the controller image. |
+| `con_docker_repo_user` | No | `None` | User to be used for repository authentication. |
+| `con_docker_repo_password` | No | `None` | Password to be used for repository authentication. |
 
-### Docker Install Variables
+### Docker Deployment Variables
 | Variable | Required | Default | Comments |
 |----------|----------|---------|----------|
 | `con_cores` | No | `{{ ansible_processor_cores * ansible_processor_count }}` | How many cores the controller will use. |
 | `con_memory_gb` | No | `{{ ansible_memtotal_mb // 1024 }}` | How much memory the controller will use.  |
-| `destination_disk` | No | `auto-detect based on ansible_mounts largest sized disk` | The disk that the controller data will be installed |
+| `con_destination_disk` | No | `auto-detect based on ansible_mounts largest sized disk` | The disk that the controller data will be installed |
 | `con_disk_path` | No | `{{ destination_disk }}opt/avi/controller/data` | The path that the controller data will be installed. |
 | `con_disk_gb` | No | `30` | The size of the disk that will be used by controller data. |
 | `con_metrics_disk_path` | No | `None` | The path that the controller metric data will be stored. |
@@ -38,36 +47,34 @@ Requires Docker to be installed. We have created `avinetworks.docker` to install
 | `con_logs_disk_path` | No | `None` | The path that the controller log data will be stored. |
 | `con_logs_disk_gb` | No | `None` | The size of the disk that will be used by log data. |
 | `controller_ip` | No | `{{ ansible_default_ipv4.address }}` | The IP address of the controller. |
-| `dev_name` | No | `auto-detect based on controller_ip` | The device name that will be used by the controller. |
-| `setup_json` | No | `None` | The source location of the setup.json file. Used to auto-configure a controller. |
-| `fresh_install` | No | `false` | Erases any pre-existing directories associated with the controller. |
-| `skip_requirements` | No | `false` | Skips any requirements for disk space, ram, and cpu. |
-| `portal_http_port` | No | `80` | Port used for the controllers unsecured web interface. |
-| `portal_https_port` | No | `443` | Port used for the controllers secured web interface. |
-| `sysint_port` | No | `8443` | Port to be used by the controller communication interface. |
-| `controller_ssh_port` | No | `5098` | Port used to connect directly to the controllers ssh port. |
-| `serviceengine_ssh_port` | No | `5099` | Port used to connect directly to the service engines ssh port. |
-| `controller_cli_port` | No | `5054` | Port used to access the command line interface of the controller. |
-| `snmp_port` | No | `161` | UDP port used to access the SNMP service on the controller. |
-| `mounts_extras` | No | `[]` | Extra mounting points to be used by the controller. |
-| `env_variables_extras` | No | `[]` | Extra environment variables to be used by the controller. |
-| `ports_list_extras` | No | `[]` | Extra ports to be used by the controller. |
+| `con_dev_name` | No | `auto-detect based on controller_ip` | The device name that will be used by the controller. |
+| `con_setup_json` | No | `None` | The source location of the setup.json file. Used to auto-configure a controller. |
+| `con_fresh_install` | No | `false` | Erases any pre-existing directories associated with the controller. |
+| `con_portal_http_port` | No | `80` | Port used for the controllers unsecured web interface. |
+| `con_portal_https_port` | No | `443` | Port used for the controllers secured web interface. |
+| `con_sysint_port` | No | `8443` | Port to be used by the controller communication interface. |
+| `con_controller_ssh_port` | No | `5098` | Port used to connect directly to the controllers ssh port. |
+| `con_serviceengine_ssh_port` | No | `5099` | Port used to connect directly to the service engines ssh port. |
+| `con_controller_cli_port` | No | `5054` | Port used to access the command line interface of the controller. |
+| `con_snmp_port` | No | `161` | UDP port used to access the SNMP service on the controller. |
+| `con_mounts_extras` | No | `[]` | Extra mounting points to be used by the controller. |
+| `con_env_variables_extras` | No | `[]` | Extra environment variables to be used by the controller. |
+| `con_ports_list_extras` | No | `[]` | Extra ports to be used by the controller. |
 
 ### CSP Deployment Variables
 These are only marked required, for when you are using CSP Deployment.   
 | Variable | Required | Default | Comments |
 |----------|----------|---------|----------|
-| `csp_deploy` | Yes | `false` | Set to true if deploying on CSP |
-| `csp_user` | Yes | `None` | Username that will be used to connect to the CSP server |
-| `csp_password` | Yes | `None` | Password required to authenticate the user |
-| `csp_con_qcow_image_file` | No | `controller.qcow` | Relative or absolute location of the controller qcow |
-| `csp_con_mgmt_ip` | Yes | `None` | IP of the controller on the management network. |
-| `csp_con_mgmt_mask` | Yes | `None` | Subnet mask that the controller will require. |
-| `csp_con_default_gw` | Yes | `None` | Default gateway for the controller |
-| `csp_con_disk_size` | No | `64` | Amount of disk space in GB for the controller |
-| `csp_con_service_name` | No | `avi-controller` | Name of the service to be created on the CSP |
-| `csp_con_num_cpu` | No | `4` | Number of CPUs to be allocated to the Controller |
-| `csp_con_memory` | No | `16` | Amount of memory in GB allocated to the Controller |
+| `con_csp_user` | Yes | `None` | Username that will be used to connect to the CSP server |
+| `con_csp_password` | Yes | `None` | Password required to authenticate the user |
+| `con_csp_qcow_image_file` | No | `controller.qcow` | Relative or absolute location of the controller qcow |
+| `con_csp_mgmt_ip` | Yes | `None` | IP of the controller on the management network. |
+| `con_csp_mgmt_mask` | Yes | `None` | Subnet mask that the controller will require. |
+| `con_csp_default_gw` | Yes | `None` | Default gateway for the controller |
+| `con_csp_disk_size` | No | `64` | Amount of disk space in GB for the controller |
+| `con_csp_service_name` | No | `avi-controller` | Name of the service to be created on the CSP |
+| `con_csp_num_cpu` | No | `4` | Number of CPUs to be allocated to the Controller |
+| `con_csp_memory` | No | `16` | Amount of memory in GB allocated to the Controller |
 
 ### Parameter Override Variables
 However, you are able to provide these parameters another way. Using the following variables. This will allow the user to customize all values.  
@@ -75,19 +82,19 @@ However, you are able to provide these parameters another way. Using the followi
 
 ```
 
-env_variables_all:
+con_env_variables_all:
   - "CONTAINER_NAME=avicontroller"
   - "MANAGEMENT_IP={{ controller_ip | string}}"
   - "NUM_CPU={{ con_cores }}"
   - "NUM_MEMG={{ con_memory_gb }}"
   - "DISK_GB={{ con_disk_gb }}"
 
-mounts_all:
+con_mounts_all:
   - "/:/hostroot/"
   - "/var/run/docker.sock:/var/run/docker.sock"
   - "{{ con_disk_path }}:/vol/"
 
-ports_list_all:
+con_ports_list_all:
   - "5098:5098"
   - "80:80"
   - "443:443"
@@ -130,14 +137,14 @@ The following is an example with minimum parameters.
   gather_facts: false
   roles:
     - role: avinetworks.avicontroller
-      csp_deploy: true
-      csp_user: admin
-      csp_password: password
-      csp_con_qcow_image_file: avi-controller.qcow2
-      csp_con_mgmt_ip: 10.128.2.20
-      csp_con_mgmt_mask: 255.255.255.0
-      csp_con_default_gw: 10.128.2.1
-      csp_con_service_name: avi-controller
+      con_deploy_type: csp
+      con_csp_user: admin
+      con_csp_password: password
+      con_csp_qcow_image_file: avi-controller.qcow2
+      con_csp_mgmt_ip: 10.128.2.20
+      con_csp_mgmt_mask: 255.255.255.0
+      con_csp_default_gw: 10.128.2.1
+      con_csp_service_name: avi-controller
 ```
 
 ## License

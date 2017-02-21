@@ -1,31 +1,31 @@
 ---
 - name: Avi Controller | CSP | Service deploy | Check if service already exists
   uri:
-    url: "https://{{ inventory_hostname }}/api/running/services/service/{{ csp_con_service_name }}"
+    url: "https://{{ inventory_hostname }}/api/running/services/service/{{ con_csp_service_name }}"
     method: GET
-    user: "{{ csp_user }}"
-    password: "{{ csp_password }}"
+    user: "{{ con_csp_user }}"
+    password: "{{ con_csp_password }}"
     force_basic_auth: yes
     headers:
       Accept: '*/*'
     validate_certs: false
     return_content: true
   failed_when: false
-  register: csp_con_service_exists
+  register: con_csp_service_exists
   delegate_to: localhost
 
 - block:
     - set_fact:
-        csp_con_service_exists_json: "{{ csp_con_service_exists.content|from_json }}"
-    - debug: msg="Service {{ csp_con_service_exists_json['vsb:service'].name }} already exists."
-  when: csp_con_service_exists.status == 200
+        con_csp_service_exists_json: "{{ con_csp_service_exists.content|from_json }}"
+    - debug: msg="Service {{ con_csp_service_exists_json['vsb:service'].name }} already exists."
+  when: con_csp_service_exists.status == 200
 
 - name: Avi Controller | CSP | Service deploy | Create the service
   uri:
     url: "https://{{ inventory_hostname }}/api/running/services/"
     method: POST
-    user: "{{ csp_user }}"
-    password: "{{ csp_password }}"
+    user: "{{ con_csp_user }}"
+    password: "{{ con_csp_password }}"
     force_basic_auth: yes
     headers:
       Accept: '*/*'
@@ -33,18 +33,18 @@
     body_format: json
     body:
       service:
-        disk_size: "{{ csp_con_disk_size|int }}"
-        name: "{{ csp_con_service_name }}"
+        disk_size: "{{ con_csp_disk_size|int }}"
+        name: "{{ con_csp_service_name }}"
         power: 'on'
-        iso_name: "{{ csp_con_qcow_image_name }}"
-        day0_filename: "{{ csp_con_qcow_metafile_name }}"
-        numcpu: "{{ csp_con_num_cpu|int }}"
-        memory: "{{ csp_con_memory|int }}"
+        iso_name: "{{ con_csp_qcow_image_name }}"
+        day0_filename: "{{ con_csp_qcow_metafile_name }}"
+        numcpu: "{{ con_csp_num_cpu|int }}"
+        memory: "{{ con_csp_memory|int }}"
         vnics:
           vnic:
-            "{{ csp_con_vnics }}"
+            "{{ con_csp_vnics }}"
     return_content: true
   register: csp_avi_controller_service
-  failed_when: csp_avi_se_service.status != 201
+  failed_when: csp_avi_con_service.status != 201
   delegate_to: localhost
-  when: csp_con_service_exists.status != 200
+  when: con_csp_service_exists.status != 200

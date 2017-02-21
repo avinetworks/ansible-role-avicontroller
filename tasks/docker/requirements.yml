@@ -8,30 +8,30 @@
 - block:
   - name: Avi Controller | Requirements | Get the management device name | ip addr
     shell: "ip addr show | grep {{ controller_ip }} | awk '{print $NF}'"
-    register: mgmt_device
+    register: con_mgmt_device
     changed_when: false
   - name: Avi Controller | Requirements | Set the management device name | ip addr
     set_fact:
-      dev_name: "{{ mgmt_device.stdout }}"
-  when: dev_name == None
+      con_dev_name: "{{ con_mgmt_device.stdout }}"
+  when: con_dev_name == None
 
 - name: Avi Controller | Requirements | Set facts
   set_fact:
-    max_cores: "{{ ansible_processor_cores * ansible_processor_count }}"
-    ansible_memtotal_gb: "{{ ansible_memtotal_mb // 1024 }}"
+    con_max_cores: "{{ ansible_processor_cores * ansible_processor_count }}"
+    con_ansible_memtotal_gb: "{{ ansible_memtotal_mb // 1024 }}"
 
 - name: Avi Controller | Requirements | Validate Parameters
   assert:
     that:
       - "ansible_memtotal_mb >= 12288"
-      - "con_memory_gb|int <= ansible_memtotal_gb|int"
-      - "max_cores|int >= 4"
-      - "con_cores|int <= max_cores|int"
-  when: not skip_requirements
+      - "con_memory_gb|int <= con_ansible_memtotal_gb|int"
+      - "con_max_cores|int >= 4"
+      - "con_cores|int <= con_max_cores|int"
+  when: not con_skip_requirements
 
 - name: Avi Controller | Requirements | Fresh install steps
   include: fresh_install.yml
-  when: fresh_install
+  when: con_fresh_install
 
 - name: Avi Controller | Requirements | Create directories for controller
   file: path="{{ item }}" state=directory mode=0755
@@ -76,4 +76,4 @@
           - con_logs_disk_gb != None
           - con_logs_disk_path_space.stdout|int > con_logs_disk_gb|int
       when: con_logs_disk_path != None
-  when: not skip_requirements
+  when: not con_skip_requirements

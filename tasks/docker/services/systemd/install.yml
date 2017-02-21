@@ -1,0 +1,24 @@
+---
+# This task deploys the avicontroller service used for the 16.x versions of Avi
+- name: Avi Controller | Services | systemd | 16.x | Deploy the avicontroller service
+  template:
+    src: 16.x/avicontroller.service.j2
+    dest: /etc/systemd/system/avicontroller.service
+    mode: 0644
+  register: avicontroller_service
+  notify:
+    - Avi Controller | Services | systemd | Daemon reload
+    - Avi Controller | Services | Restart the avicontroller service
+  when: con_old_service
+
+# This task deploys the avicontroller service used for the 17.x versions of Avi
+- name: Avi Controller | Services | systemd | 17.x+ | Deploy the avicontroller service
+  copy:
+    src: systemd/avicontroller.service
+    dest: /etc/systemd/system/avicontroller.service
+    mode: 0644
+  register: avicontroller_service
+  notify:
+    - Avi Controller | Services | systemd | Daemon reload
+    - Avi Controller | Services | Restart the avicontroller service
+  when: con_new_service
