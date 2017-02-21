@@ -7,7 +7,7 @@
 
 - block:
   - name: Avi Controller | Requirements | Get the management device name | ip addr
-    shell: "ip addr show | grep {{ controller_ip }} | awk '{print $NF}'"
+    shell: "ip addr show | grep {{ con_controller_ip }} | awk '{print $NF}'"
     register: con_mgmt_device
     changed_when: false
   - name: Avi Controller | Requirements | Set the management device name | ip addr

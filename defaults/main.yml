@@ -39,7 +39,7 @@ con_csp_vnics:
 
 # docker deployment parameters
 con_fresh_install: false
-controller_ip: "{{ ansible_default_ipv4.address }}"
+con_controller_ip: "{{ ansible_default_ipv4.address }}"
 con_cores: "{{ ansible_processor_cores * ansible_processor_count }}"
 con_memory_gb: "{{ ansible_memtotal_mb // 1024 }}"
 con_destination_disk: "{{ ansible_mounts|sort(reverse=True, attribute='size_total')|map(attribute='mount')|first }}"
@@ -76,7 +76,7 @@ con_mounts_string: "{% for mount_var in con_mounts_all|reject('match', '^$') %} 
 con_env_variables_extras: []
 con_env_variables_default:
   - "CONTAINER_NAME=avicontroller"
-  - "MANAGEMENT_IP={{ controller_ip|string}}"
+  - "MANAGEMENT_IP={{ con_controller_ip|string}}"
   - "NUM_CPU={{ con_cores }}"
   - "NUM_MEMG={{ con_memory_gb }}"
   - "DISK_GB={{ con_disk_gb }}"

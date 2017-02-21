@@ -48,8 +48,8 @@ Requires Docker to be installed. We have created `avinetworks.docker` to install
 | `con_metrics_disk_gb` | No | `None` | The size of the disk that will be used by metric data. |
 | `con_logs_disk_path` | No | `None` | The path that the controller log data will be stored. |
 | `con_logs_disk_gb` | No | `None` | The size of the disk that will be used by log data. |
-| `controller_ip` | No | `{{ ansible_default_ipv4.address }}` | The IP address of the controller. |
-| `con_dev_name` | No | `auto-detect based on controller_ip` | The device name that will be used by the controller. |
+| `con_controller_ip` | No | `{{ ansible_default_ipv4.address }}` | The IP address of the controller. |
+| `con_dev_name` | No | `auto-detect based on con_controller_ip` | The device name that will be used by the controller. |
 | `con_setup_json` | No | `None` | The source location of the setup.json file. Used to auto-configure a controller. |
 | `con_fresh_install` | No | `false` | Erases any pre-existing directories associated with the controller. |
 | `con_portal_http_port` | No | `80` | Port used for the controllers unsecured web interface. |
@@ -87,7 +87,7 @@ However, you are able to provide these parameters another way. Using the followi
 
 con_env_variables_all:
   - "CONTAINER_NAME=avicontroller"
-  - "MANAGEMENT_IP={{ controller_ip | string}}"
+  - "MANAGEMENT_IP={{ con_controller_ip | string}}"
   - "NUM_CPU={{ con_cores }}"
   - "NUM_MEMG={{ con_memory_gb }}"
   - "DISK_GB={{ con_disk_gb }}"
@@ -119,7 +119,7 @@ For more information please visit [https://kb.avinetworks.com/avi-controller-siz
 - hosts: servers
   roles:
     - role: avinetworks.avicontroller
-      controller_ip: 10.10.27.101
+      con_controller_ip: 10.10.27.101
       con_cores: 4                     # If not specified core count is 4
       con_memory_gb: 12                 # If not specified memory count is 12
 ```
