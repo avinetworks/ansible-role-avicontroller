@@ -1,0 +1,43 @@
+---
+- name: Avi Controller | Check minimum requirements
+  include: requirements.yml
+
+- name: Avi Controller | Perform specific os tasks
+  include: os/{{ ansible_distribution|lower }}.yml
+
+- name: Avi Controller | Perform specific os family tasks
+  include: family/{{ ansible_os_family|lower }}.yml
+
+- name: Avi Controller | Copy setup.json to controller
+  copy: src="{{ con_setup_json }}" dest="{{ con_disk_path }}/setup.json"
+  when: con_setup_json != None
+
+# We must do this step first just in case we need to override defaults from the supplied package
+- name: Avi Controller | Docker | Package Deploy
+  include: package_deploy.yml
+  when: con_package_deploy
+
+- name: Avi Controller | Docker | Check if specified image already exists.
+  shell: "docker images -q {{ con_image }}"
+  changed_when: false
+  register: con_docker_match
+
+- block:
+    - name: Avi Controller | Docker | Docker Hub
+      include: docker_hub.yml
+      when: con_docker_repo == None
+    - name: Avi Controller | Docker | Custom Repo
+      include: custom_repo.yml
+      when: con_docker_repo != None
+  when: not con_package_deploy
+
+- name: Avi Controller | Set service facts for deploy
+  set_fact:
+    con_old_service: "{{ con_version|version_compare('17.0.0', '<') or con_version == 'latest' }}"
+    con_new_service: "{{ con_version|version_compare('17.0.0', '>=') and con_version != 'latest' }}"
+
+- name: Avi Controller | Docker | Cleanup
+  include: services/cleanup.yml
+
+- name: Avi Controller | Docker | Install the Avi Controller services
+  include: services/install.yml

@@ -1,0 +1,33 @@
+---
+- name: Avi Controller | CSP | Image deploy | See if the qcow image already exists
+  uri:
+    url: "https://{{ inventory_hostname }}/api/operational/repository/image/{{ con_csp_qcow_image_name }}/_operations/get_image"
+    method: POST
+    user: "{{ con_csp_user }}"
+    password: "{{ con_csp_password }}"
+    force_basic_auth: yes
+    headers:
+      Accept: '*/*'
+    validate_certs: false
+    return_content: true
+  failed_when: false
+  register: con_image_exists
+  delegate_to: localhost
+
+- block:
+    - set_fact:
+        con_image_exists_json: "{{ con_image_exists.content|from_json }}"
+    - debug: msg="Image {{ con_image_exists_json.output.name }} already exists."
+  when: con_image_exists.status == 200
+
+- block:
+    - name: Avi Controller | CSP | Image deploy | Verify qcow exists locally
+      stat:
+        path: "{{ con_csp_qcow_image_file }}"
+      delegate_to: localhost
+      register: con_qcow_status
+      failed_when: not con_qcow_status.stat.exists
+    - name: Avi Controller | CSP | Image deploy | SCP qcow to csp device
+      shell: sshpass -p {{ con_csp_password }} scp {{ con_image_name }} {{ con_csp_user }}@{{ inventory_hostname }}:/osp/repository
+      delegate_to: localhost
+  when: con_image_exists.status != 200

@@ -1,0 +1,5 @@
+---
+- name: Avi Controller | Services | upstart | Deploy the avicontroller service
+  copy: src=upstart/avicontroller.conf dest=/etc/init/avicontroller.conf mode=0644
+  register: avicontroller_service
+  notify: Avi Controller | Services | Restart the avicontroller service

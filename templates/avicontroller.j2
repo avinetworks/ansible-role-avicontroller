@@ -7,8 +7,8 @@ docker_exec=/usr/bin/docker
 logfile="/var/log/${container}.log"
 cidfile="/var/run/${container}.cid"
 image_name="avinetworks/controller"
-dev_name="{{ dev_name }}"
-docker_run_params="{{ docker_run_params }}"
+dev_name="{{ con_dev_name }}"
+docker_run_params="{{ con_docker_run_params }}"
 
 write_log() {
   echo $1 2>&1 | tee -a ${logfile}

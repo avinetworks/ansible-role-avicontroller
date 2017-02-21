@@ -1,0 +1,14 @@
+---
+# Deployment using CSP. This does require you to download the QCOW from the Avi customer portal.
+# Using the relative, or absolute location of the file will allow you to upload, and configure the CSP service.
+- name: Avi Controller | CSP | Requirements
+  include: requirements.yml
+
+- name: Avi Controller | CSP | Image deploy
+  include: qcow_deploy.yml
+
+- name: Avi Controller | CSP | Metafile deploy
+  include: metafile_deploy.yml
+
+- name: Avi Controller | CSP | Service deploy
+  include: service_deploy.yml
