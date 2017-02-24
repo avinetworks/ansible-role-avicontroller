@@ -29,6 +29,7 @@ con_csp_mgmt_mask: ~
 con_csp_default_gw: ~
 con_csp_disk_size: 64
 con_csp_service_name: avi-controller
+con_csp_metafile_name: avi_meta_{{ con_csp_service_name }}.yml
 con_csp_num_cpu: 4
 con_csp_memory: 16
 con_csp_vnics:
