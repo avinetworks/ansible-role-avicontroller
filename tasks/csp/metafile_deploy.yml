@@ -23,7 +23,7 @@
 - block:
     - name: Avi Controller | CSP | Metafile deploy | Create metafile content
       template:
-        src: avi_meta_controller.j2
+        src: csp/avi_meta_controller.j2
         dest: /tmp/{{ con_csp_metafile_name }}
       delegate_to: localhost
       register: con_avi_metafile
