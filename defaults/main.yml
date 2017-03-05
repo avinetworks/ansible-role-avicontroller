@@ -31,7 +31,8 @@ con_csp_disk_size: 64
 con_csp_service_name: avi-controller
 con_csp_metafile_name: avi_meta_{{ con_csp_service_name }}.yml
 con_csp_num_cpu: 4
-con_csp_memory: 16
+con_csp_memory_gb: 16
+con_csp_memory_mb: "{{ con_csp_memory_gb|int * 1024 }}"
 con_csp_vnics:
   - nic: '0'
     type: access
