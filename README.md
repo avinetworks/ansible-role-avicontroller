@@ -77,7 +77,7 @@ These are only marked required, for when you are using CSP Deployment.
 | `con_csp_disk_size` | No | `64` | Amount of disk space in GB for the controller |
 | `con_csp_service_name` | No | `avi-controller` | Name of the service to be created on the CSP |
 | `con_csp_num_cpu` | No | `4` | Number of CPUs to be allocated to the Controller |
-| `con_csp_memory` | No | `16` | Amount of memory in GB allocated to the Controller |
+| `con_csp_memory_gb` | No | `16` | Amount of memory in GB allocated to the Controller |
 
 ### Parameter Override Variables
 However, you are able to provide these parameters another way. Using the following variables. This will allow the user to customize all values.  
@@ -114,6 +114,7 @@ For more information please visit [https://kb.avinetworks.com/avi-controller-siz
 
 **It is recommended you adjust these parameters based on the implementation desired.**
 
+### Docker Deployment Examples
 ```
 
 - hosts: servers
