@@ -16,8 +16,8 @@
 
 - block:
     - set_fact:
-        con_avi_metafile_exists_json: "{{ con_avi_metafile_exists.content|from_json }}"
-    - debug: msg="Metafile {{ con_avi_metafile_exists_json.output.name }} already exists."
+        con_csp_metafile_exists_json: "{{ con_csp_metafile_exists.content|from_json }}"
+    - debug: msg="Metafile {{ con_csp_metafile_exists_json.output.name }} already exists."
   when: con_csp_metafile_exists.status == 200
 
 - block:
