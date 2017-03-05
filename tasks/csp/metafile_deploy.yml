@@ -30,4 +30,5 @@
     - name: Avi Controller | CSP | Metafile deploy | Deploy metafile {{ con_csp_metafile_name }} to the CSP device
       shell: sshpass -p {{ con_csp_password }} scp /tmp/{{ con_csp_metafile_name }} {{ con_csp_user }}@{{ inventory_hostname }}:/osp/repository
       delegate_to: localhost
+      failed_when: false
   when: con_csp_metafile_exists.status != 200
