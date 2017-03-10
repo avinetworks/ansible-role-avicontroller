@@ -1,8 +1,12 @@
 #!/bin/bash
+## Usage: avise [options] ARG1
+## Description: This script manages and provides manage of the Avi Controller service.
+## Author: Eric Anderson <support@avinetworks.com>
+
 
 if [ -f /etc/default/avicontroller ]; then
   . /etc/default/avicontroller
-elif [ -f /etc/default/avicontroller ]; then
+elif [ -f /etc/sysconfig/avicontroller ]; then
   . /etc/sysconfig/avicontroller
 else
   echo "Failed to start: missing defaults"
