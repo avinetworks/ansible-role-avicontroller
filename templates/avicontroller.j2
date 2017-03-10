@@ -1,10 +1,17 @@
 #!/bin/bash
 
-# Load variables
-. /etc/default/avicontroller
+if [ -f /etc/default/avicontroller ]; then
+  . /etc/default/avicontroller
+elif [ -f /etc/default/avicontroller ]; then
+  . /etc/sysconfig/avicontroller
+else
+  echo "Failed to start: missing defaults"
+  exit 1
+fi
+
 
 write_log() {
-  echo $1 2>&1 | tee -a ${LOGFILE}
+  echo $1 2>&1 | tee -a ${AVICONTROLLER_LOGFILE}
 }
 
 container_running() {
@@ -17,7 +24,7 @@ container_exists() {
 
 start_container() {
   write_log "[`date`] Starting the avicontroller container"
-  /usr/bin/docker run ${DOCKER_RUN_PARAMS}
+  /usr/bin/docker run ${AVICONTROLLER_DOCKER_RUN_PARAMS}
   if [ $? -eq 0 ]; then
     write_log "[`date`] Service avicontroller running..."
   else
@@ -77,13 +84,13 @@ stop() {
 }
 
 poststop() {
-  if $(ip addr | grep -q ${DEV_NAME}:avivip); then
-    /bin/bash -c "ip addr del $(ip addr | grep ${DEV_NAME}:avivip | awk '{print $2}') dev ${DEV_NAME}"
+  if $(ip addr | grep -q ${AVICONTROLLER_DEV_NAME}:avivip); then
+    /bin/bash -c "ip addr del $(ip addr | grep ${AVICONTROLLER_DEV_NAME}:avivip | awk '{print $2}') dev ${AVICONTROLLER_DEV_NAME}"
     if [ $? -eq 0 ]; then
       write_log "[`date`] Successfuly removed the cluster vip interface."
     fi
-  elif $(ip addr | grep -q ${DEV_NAME}:1); then
-    /bin/bash -c "ip addr del $(ip addr | grep ${DEV_NAME}:1 | awk '{print $2}') dev ${DEV_NAME}"
+  elif $(ip addr | grep -q ${AVICONTROLLER_DEV_NAME}:1); then
+    /bin/bash -c "ip addr del $(ip addr | grep ${AVICONTROLLER_DEV_NAME}:1 | awk '{print $2}') dev ${AVICONTROLLER_DEV_NAME}"
     if [ $? -eq 0 ]; then
       write_log "[`date`] Successfuly removed the cluster vip interface."
     fi
