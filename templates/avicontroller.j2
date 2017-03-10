@@ -1,64 +1,57 @@
 #!/bin/bash
 
-# Set common variables
-container=avicontroller
-service_desc="Avi Controller"
-docker_exec=/usr/bin/docker
-logfile="/var/log/${container}.log"
-cidfile="/var/run/${container}.cid"
-image_name="avinetworks/controller"
-dev_name="{{ con_dev_name }}"
-docker_run_params="{{ con_docker_run_params }}"
+# Load variables
+. /etc/default/avicontroller
 
 write_log() {
-  echo $1 2>&1 | tee -a ${logfile}
+  echo $1 2>&1 | tee -a ${LOGFILE}
 }
 
 container_running() {
-  docker ps -f name=${container} | grep -q ${container}
+  /usr/bin/docker ps -f name=avicontroller | grep -q avicontroller
 }
 
 container_exists() {
-  docker ps -a -f name=${container} | grep -q ${container}
+  /usr/bin/docker ps -a -f name=avicontroller | grep -q avicontroller
 }
 
 start_container() {
-  write_log "[`date`] Starting the ${container} container"
-  /usr/bin/docker run ${docker_run_params}
+  write_log "[`date`] Starting the avicontroller container"
+  /usr/bin/docker run ${DOCKER_RUN_PARAMS}
   if [ $? -eq 0 ]; then
-    write_log "[`date`] Service ${container} running..."
+    write_log "[`date`] Service avicontroller running..."
   else
-    write_log "[`date`] Failed to start the ${container} container"
+    write_log "[`date`] Failed to start the avicontroller container"
     exit 1
   fi
 }
 
 stop_container() {
-  /usr/bin/docker stop -t 60 ${container}
+  /usr/bin/docker stop -t 60 avicontroller
   if [ $? -eq 0 ]; then
-    write_log "[`date`] Stopped the ${container} container"
+    write_log "[`date`] Stopped the avicontroller container"
   else
     exit 1
   fi
 }
 
 remove_container() {
-  write_log "[`date`] Removing existing ${container} container"
-  /usr/bin/docker rm -f ${container}
+  write_log "[`date`] Removing existing avicontroller container"
+  /usr/bin/docker rm -f avicontroller
   if [ $? -eq 0 ]; then
-    write_log "[`date`] Removed existing ${container} container"
+    write_log "[`date`] Removed existing avicontroller container"
   else
-    write_log "[`date`] Failed to remove existing ${container} container"
+    write_log "[`date`] Failed to remove existing avicontroller container"
   fi
 }
 
 prestart() {
   # Clean up any running or existing avicontroller containers
-  write_log "[`date`] Performing ${container} pre-start step."
+  write_log "[`date`] Performing avicontroller pre-start step."
   if container_running && container_exists; then
-    write_log "[`date`] Service ${container} is already running."
+    write_log "[`date`] Service avicontroller is already running."
   elif ! container_running && container_exists; then
-    write_log "[`date`] Container ${container} already exists, but not running. This can be caused by an
+    write_log "[`date`] Container avicontroller already exists, but not running. This can be caused by an
       improper shutdown, or service crash. Performing cleanup"
     remove_container
     start_container
@@ -69,28 +62,28 @@ prestart() {
 
 start() {
   prestart
-  /usr/bin/docker wait ${container}
+  /usr/bin/docker wait avicontroller
 }
 
 stop() {
   # Stopping the docker process if running
   if container_running; then
-    write_log "[`date`] Service ${container} stopping..."
+    write_log "[`date`] Service avicontroller stopping..."
     stop_container
   else
-    write_log "[`date`] Service ${container} already stopped"
+    write_log "[`date`] Service avicontroller already stopped"
   fi
   poststop
 }
 
 poststop() {
-  if $(ip addr | grep -q ${dev_name}:avivip); then
-    /bin/bash -c "ip addr del $(ip addr | grep ${dev_name}:avivip | awk '{print $2}') dev ${dev_name}"
+  if $(ip addr | grep -q ${DEV_NAME}:avivip); then
+    /bin/bash -c "ip addr del $(ip addr | grep ${DEV_NAME}:avivip | awk '{print $2}') dev ${DEV_NAME}"
     if [ $? -eq 0 ]; then
       write_log "[`date`] Successfuly removed the cluster vip interface."
     fi
-  elif $(ip addr | grep -q ${dev_name}:1); then
-    /bin/bash -c "ip addr del $(ip addr | grep ${dev_name}:1 | awk '{print $2}') dev ${dev_name}"
+  elif $(ip addr | grep -q ${DEV_NAME}:1); then
+    /bin/bash -c "ip addr del $(ip addr | grep ${DEV_NAME}:1 | awk '{print $2}') dev ${DEV_NAME}"
     if [ $? -eq 0 ]; then
       write_log "[`date`] Successfuly removed the cluster vip interface."
     fi
@@ -111,9 +104,9 @@ reload() {
 
 status() {
   if container_running; then
-    echo "${container} running..."
+    echo "avicontroller running..."
   else
-    echo "${container} stopped"
+    echo "avicontroller stopped"
   fi
 }
 
