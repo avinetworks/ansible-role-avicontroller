@@ -53,6 +53,7 @@ con_logs_disk_path: ~
 con_logs_disk_gb: ~
 con_dev_name: ~
 con_setup_json: ~
+con_setup_json_raw: ~
 con_portal_http_port: 80
 con_portal_https_port: 443
 con_sysint_port: 8443

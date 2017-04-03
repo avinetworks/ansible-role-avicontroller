@@ -12,6 +12,10 @@
   copy: src="{{ con_setup_json }}" dest="{{ con_disk_path }}/setup.json"
   when: con_setup_json != None
 
+- name: Avi Controller | Copy setup.json to controller
+  copy: content="{{ con_setup_json_raw | to_nice_json }}\n" dest="{{ con_disk_path }}/setup.json"
+  when: con_setup_json_raw != None
+
 # We must do this step first just in case we need to override defaults from the supplied package
 - name: Avi Controller | Docker | Package Deploy
   include: package_deploy.yml
