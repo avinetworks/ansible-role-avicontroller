@@ -19,8 +19,8 @@ Role Variables
 Setting Deployment type
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-+-------------+-------------+------------+-------------------------+
-| Variable    | Required    | Default    | Comments                |
++-------------+-------------+------------+-------------+
+| Variable    | Required    | Default    | Comments    |
 +=============+=============+============+=============+
 | ``con_deplo | No          | ``docker`` | Sets the    |
 | y_type``    |             |            | type of     |
@@ -409,9 +409,7 @@ The following is an example with minimum parameters.
 CSP Deployment Example
 ~~~~~~~~~~~~~~~~~~~~~~
 
-.. note::
-
-  When running. ``gather_facts`` needs to be set to ``false``, failure to do so will cause Ansible failure on first step.
+.. note:: When running. ``gather_facts`` needs to be set to ``false``, failure to do so will cause Ansible failure on first step.
 
 .. code-block:: yaml
 
