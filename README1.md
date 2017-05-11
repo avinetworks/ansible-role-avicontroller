@@ -108,11 +108,14 @@ con_ports_list_all:
 
 ## Example Playbook
 
-**WARNING:**
-**Before using this example please make the correct changes required for your server.  
-For more information please visit [https://kb.avinetworks.com/avi-controller-sizing/] (https://kb.avinetworks.com/avi-controller-sizing/)**
+> **WARNING**  
+Before using this example please make the correct changes required for your server.  
+For more information please visit [https://kb.avinetworks.com/avi-controller-sizing/] (https://kb.avinetworks.com/avi-controller-sizing/)  
+It is recommended you adjust these parameters based on the implementation desired.
 
-**It is recommended you adjust these parameters based on the implementation desired.**
+
+
+
 
 ### Docker Deployment Examples
 ```
@@ -134,7 +137,10 @@ The following is an example with minimum parameters.
 ```
 
 ### CSP Deployment Example
-**Note:** When running. `gather_facts` needs to be set to `false`, failure to do so will cause Ansible failure on first step.
+
+> **Note**  
+When running. `gather_facts` needs to be set to `false`, failure to do so will cause Ansible failure on first step.
+
 ```
 ---
 - hosts: csp_devices
@@ -151,8 +157,6 @@ The following is an example with minimum parameters.
       con_csp_service_name: avi-controller
 ```
 
-> **Notice**
-> You must replace `test` with your personal API key.
 
 ## License
 
