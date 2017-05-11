@@ -19,8 +19,8 @@ Role Variables
 Setting Deployment type
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-+-------------+-------------+------------+-------------+
-| Variable    | Required    | Default    | Comments    |
++-------------+-------------+------------+-------------------------+
+| Variable    | Required    | Default    | Comments                |
 +=============+=============+============+=============+
 | ``con_deplo | No          | ``docker`` | Sets the    |
 | y_type``    |             |            | type of     |
@@ -352,8 +352,7 @@ Parameter Override Variables
   values.
 | **!!!BEWARE: USING THIS WILL ERASE DEFAULTS - USE WITH CAUTION!!!**
 
-::
-
+.. code-block:: yaml
 
     con_env_variables_all:
       - "CONTAINER_NAME=avicontroller"
@@ -390,8 +389,7 @@ Example Playbook
 Docker Deployment Examples
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-::
-
+.. code-block:: yaml
 
     - hosts: servers
       roles:
@@ -402,8 +400,7 @@ Docker Deployment Examples
 
 The following is an example with minimum parameters.
 
-::
-
+.. code-block:: yaml
 
     - hosts: servers
       roles:
@@ -412,11 +409,11 @@ The following is an example with minimum parameters.
 CSP Deployment Example
 ~~~~~~~~~~~~~~~~~~~~~~
 
-    | **Note**
-    | When running. ``gather_facts`` needs to be set to ``false``,
-      failure to do so will cause Ansible failure on first step.
+.. note::
 
-::
+  When running. ``gather_facts`` needs to be set to ``false``, failure to do so will cause Ansible failure on first step.
+
+.. code-block:: yaml
 
     ---
     - hosts: csp_devices
