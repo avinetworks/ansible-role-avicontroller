@@ -151,6 +151,10 @@ The following is an example with minimum parameters.
       con_csp_service_name: avi-controller
 ```
 
+<aside class="notice">
+You must replace `test` with your personal API key.
+</aside>
+
 ## License
 
 BSD
