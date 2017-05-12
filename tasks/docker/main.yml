@@ -1,17 +1,11 @@
 ---
 
-- block:
-    - name: Avi Controller | Services | systemd | 16.x | Check if Avi Controller installed
-      include: "services/{{ ansible_service_mgr }}/check.yml"
-      when: ansible_service_mgr == "systemd"
-    - name: Avi Controller | Services | init.d | 16.x | Check if Avi Controller installed
-      include: "services/initd/check.yml"
-      when: ansible_service_mgr != "systemd"
-  when: con_old_service
-
-- name: Avi Controller | Services | init.d | 17.3.x | Check if Avi Controller installed
-  include: "services/{{ ansible_service_mgr }}/check.yml"
-  when: con_new_service
+- name: Avi Controller | Services | systemd | 16.x | Check if Avi Controller installed
+  include: "services/systemd/check.yml"
+  when: ansible_service_mgr == "systemd"
+- name: Avi Controller | Services | init.d | 16.x | Check if Avi Controller installed
+  include: "services/initd/check.yml"
+  when: ansible_service_mgr != "systemd"
 
 - block:
     - name: Avi Controller | Check minimum requirements
@@ -60,4 +54,4 @@
 
     - name: Avi Controller | Docker | Install the Avi Controller services
       include: services/install.yml
-  when: not avi_installed.stat.exists
+  when: not avi_installed.stat.exists or con_force_deploy

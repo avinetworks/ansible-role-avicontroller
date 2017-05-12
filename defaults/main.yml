@@ -40,6 +40,7 @@ con_csp_vnics:
     network_name: enp1s0f0
 
 # docker deployment parameters
+con_force_deploy: false
 con_fresh_install: false
 con_controller_ip: "{{ ansible_default_ipv4.address }}"
 con_cores: "{{ ansible_processor_cores * ansible_processor_count }}"
