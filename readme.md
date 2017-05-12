@@ -5,6 +5,9 @@
 
 Using this module you are able to install the Avi Vantage Controlller, to your system. However, minimum requirements must be met.
 
+> **Warning:**  
+This Ansible role is not meant to be ran repeatedly on the host. It's meant for deployment only. Once deployed the configuration for Avi is managed by Avi.
+
 ## Requirements
 
 Requires Docker to be installed. We have created `avinetworks.docker` to install Docker on a host. Please run that role first, or manually install Docker.
@@ -108,9 +111,9 @@ con_ports_list_all:
 
 ## Example Playbook
 
-> **WARNING**  
+> **WARNING:**  
 Before using this example please make the correct changes required for your server.  
-For more information please visit [https://kb.avinetworks.com/avi-controller-sizing/] (https://kb.avinetworks.com/avi-controller-sizing/)  
+For more information please visit [https://kb.avinetworks.com/avi-controller-sizing/](https://kb.avinetworks.com/avi-controller-sizing/)  
 It is recommended you adjust these parameters based on the implementation desired.
 
 
@@ -138,7 +141,7 @@ The following is an example with minimum parameters.
 
 ### CSP Deployment Example
 
-> **Note**  
+> **Note:**  
 When running. `gather_facts` needs to be set to `false`, failure to do so will cause Ansible failure on first step.
 
 ```

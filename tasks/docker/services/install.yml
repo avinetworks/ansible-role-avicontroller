@@ -1,6 +1,6 @@
 ---
 - block:
-    - name: Avi Controller | Services | init.d | 16.x | Install the Avi Controller service
+    - name: Avi Controller | Services | systemd | 16.x | Install the Avi Controller service
       include: "systemd/install.yml"
       when: ansible_service_mgr == "systemd"
     - name: Avi Controller | Services | init.d | 16.x | Install the Avi Controller service
