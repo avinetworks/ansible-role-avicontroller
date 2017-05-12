@@ -1,9 +1,9 @@
 ---
 
-- name: Avi Controller | Services | systemd | 16.x | Check if Avi Controller installed
+- name: Avi Controller | Services | systemd | Check if Avi Controller installed
   include: "services/systemd/check.yml"
   when: ansible_service_mgr == "systemd"
-- name: Avi Controller | Services | init.d | 16.x | Check if Avi Controller installed
+- name: Avi Controller | Services | init.d | Check if Avi Controller installed
   include: "services/initd/check.yml"
   when: ansible_service_mgr != "systemd"
 
@@ -46,8 +46,7 @@
 
     - name: Avi Controller | Set service facts for deploy
       set_fact:
-        con_old_service: "{{ con_version|version_compare('17.3.0', '<') or con_version == 'latest' }}"
-        con_new_service: "{{ con_version|version_compare('17.3.0', '>=') and con_version != 'latest' }}"
+        con_new_service: "{{ con_version|version_compare('17.3.0', '>=') }}"
 
     - name: Avi Controller | Docker | Cleanup
       include: services/cleanup.yml

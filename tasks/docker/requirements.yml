@@ -5,6 +5,11 @@
   register: docker
   changed_when: false
 
+- name: Avi Controller | Requirements | Verify con_version not "latest"
+  assert:
+    that:
+      - con_version != "latest"
+
 - block:
   - name: Avi Controller | Requirements | Get the management device name | ip addr
     shell: "ip addr show | grep {{ con_controller_ip }} | awk '{print $NF}'"

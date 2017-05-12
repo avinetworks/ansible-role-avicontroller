@@ -4,15 +4,15 @@
     con_env_variables_extras: "{{ env_variables_extras + ['NON_SYSTEMD=1'] }}"
 
 - block:
-    - name: Avi Controller | Services | init.d | 16.x | Deploy the avicontroller service
+    - name: Avi Controller | Services | init.d | Deploy the avicontroller service
       template: src=16.x/avicontroller.j2 dest=/etc/init.d/avicontroller mode=0755
       register: avicontroller_service_16
       notify: Avi Controller | Services | init.d | Restart the avicontroller_watcher service
     - set_fact: avicontroller_service={{ avicontroller_service_16 }}
-  when: con_old_service
+  when: not con_new_service
 
 - block:
-    - name: Avi Controller | Services | init.d | 17.x | Deploy the avicontroller service
+    - name: Avi Controller | Services | init.d | Deploy the avicontroller service | New Service
       copy: src=init/avicontroller dest=/etc/init.d/avicontroller mode=0755
       register: avicontroller_service_17
       notify: Avi Controller | Services | init.d | Restart the avicontroller_watcher service
