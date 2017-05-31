@@ -78,7 +78,7 @@ con_mounts_extras: []
 con_mounts_default:
   - "/:/hostroot/"
   - "/var/run/docker.sock:/var/run/docker.sock"
-  - "{{ (con_deploy_type|lower == "openshift")| ternary('', '/var/run/fleet.sock:/var/run/fleet.sock') }}"
+  - "{{ (con_deploy_type|lower == 'openshift')| ternary('', '/var/run/fleet.sock:/var/run/fleet.sock') }}"
   - "{{ con_disk_path }}:/vol/"
   - "{{ (con_metrics_disk_path == None)|ternary('', con_metrics_disk_path ~ ':/vol_metrics/') }}"
   - "{{ (con_logs_disk_path == None)|ternary('', con_logs_disk_path ~ ':/vol_logs/') }}"
