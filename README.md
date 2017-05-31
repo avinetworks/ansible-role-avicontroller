@@ -16,7 +16,7 @@ Requires Docker to be installed. We have created `avinetworks.docker` to install
 ### Setting Deployment type
 | Variable | Required | Default | Comments |
 |----------|----------|---------|----------|
-| `con_deploy_type` | No | `docker` | Sets the type of deployment that should be triggered. Valid options: `docker`, `csp` |
+| `con_deploy_type` | No | `docker` | Sets the type of deployment that should be triggered. Valid options: `docker`, `csp`, `openshift` |
 
 ### Standard Parameters
 | Variable | Required | Default | Comments |
