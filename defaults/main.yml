@@ -61,12 +61,14 @@ con_setup_json_raw: ~
 con_portal_http_port: >-
   {%- if con_deploy_type == 'openshift' -%}9080
   {%- elif con_deploy_type == 'docker' -%}80
+  {%- else -%}80
   {%- endif -%}
 # If the deploy_type changes we will change the port to match
 # because of the limiatations of openshift we can't use 443 in openshift
 con_portal_https_port: >-
   {%- if con_deploy_type == 'openshift' -%}9443
   {%- elif con_deploy_type == 'docker' -%}443
+  {%- else -%}443
   {%- endif -%}
 con_sysint_port: 8443
 con_ssh_port: 5098
