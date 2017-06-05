@@ -58,9 +58,9 @@ Requires Docker to be installed. We have created `avinetworks.docker` to install
 | `con_portal_http_port` | No | `80` | Port used for the controllers unsecured web interface. |
 | `con_portal_https_port` | No | `443` | Port used for the controllers secured web interface. |
 | `con_sysint_port` | No | `8443` | Port to be used by the controller communication interface. |
-| `con_controller_ssh_port` | No | `5098` | Port used to connect directly to the controllers ssh port. |
+| `con_ssh_port` | No | `5098` | Port used to connect directly to the controllers ssh port. |
 | `con_serviceengine_ssh_port` | No | `5099` | Port used to connect directly to the service engines ssh port. |
-| `con_controller_cli_port` | No | `5054` | Port used to access the command line interface of the controller. |
+| `con_cli_port` | No | `5054` | Port used to access the command line interface of the controller. |
 | `con_snmp_port` | No | `161` | UDP port used to access the SNMP service on the controller. |
 | `con_mounts_extras` | No | `[]` | Extra mounting points to be used by the controller. |
 | `con_env_variables_extras` | No | `[]` | Extra environment variables to be used by the controller. |
