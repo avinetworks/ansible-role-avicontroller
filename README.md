@@ -81,6 +81,11 @@ These are only marked required, for when you are using CSP Deployment.
 | `con_csp_service_name` | No | `avi-controller` | Name of the service to be created on the CSP |
 | `con_csp_num_cpu` | No | `4` | Number of CPUs to be allocated to the Controller |
 | `con_csp_memory_gb` | No | `16` | Amount of memory in GB allocated to the Controller |
+| `con_csp_hsm_ip` | No | `None` | |
+| `con_csp_hsm_mask` | No | `None` | |
+| `con_csp_hsm_static_routes` | No | `None` | |
+| `con_csp_hsm_vnic_id` | No | `None` | |
+| `con_csp_bond_ifs` | No | `None` | |
 
 ### Parameter Override Variables
 However, you are able to provide these parameters another way. Using the following variables. This will allow the user to customize all values.  
@@ -158,6 +163,13 @@ When running. `gather_facts` needs to be set to `false`, failure to do so will c
       con_csp_mgmt_mask: 255.255.255.0
       con_csp_default_gw: 10.128.2.1
       con_csp_service_name: avi-controller
+      con_csp_memory_gb: 32
+      con_csp_num_cpu: 16
+      con_csp_vnics:
+        - nic: '0'
+          type: access
+          tagged: 'false'
+          network_name: enp1s0f0
 ```
 
 

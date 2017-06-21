@@ -47,6 +47,7 @@ con_csp_meta_options:
   avi.hsm-mask.CONTROLLER: "{{ con_csp_hsm_mask | default(None) }}"
   avi.hsm-static-routes.CONTROLLER: "{{ con_csp_hsm_static_routes | default(None) }}"
   avi.hsm-vnic-id.CONTROLLER: "{{ con_csp_hsm_vnic_id | default(None) }}"
+  avi.bond-ifs.CONTROLLER: "{{ con_csp_bond_ifs | default(None) }}"
 
 # docker deployment parameters
 con_force_deploy: false
