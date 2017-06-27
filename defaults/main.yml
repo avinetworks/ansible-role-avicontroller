@@ -83,7 +83,7 @@ con_portal_https_port: >-
 con_sysint_port: 8443
 con_ssh_port: 5098
 con_cli_port: 5054
-con_snmp_port: 161/udp
+con_snmp_port: 161
 
 # Mount variables which are sent to the docker container, these are used in the service templates.
 con_mounts_extras: []

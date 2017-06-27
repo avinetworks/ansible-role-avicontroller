@@ -54,6 +54,7 @@ Requires Docker to be installed. We have created `avinetworks.docker` to install
 | `con_controller_ip` | No | `{{ ansible_default_ipv4.address }}` | The IP address of the controller. |
 | `con_dev_name` | No | `auto-detect based on con_controller_ip` | The device name that will be used by the controller. |
 | `con_setup_json` | No | `None` | The source location of the setup.json file. Used to auto-configure a controller. |
+| `con_setup_json_raw` | No | `None` | Allows a user to input the setup.json data in YAML or JSON format directly in Ansible. |
 | `con_fresh_install` | No | `false` | Erases any pre-existing directories associated with the controller. |
 | `con_portal_http_port` | No | `80` | Port used for the controllers unsecured web interface. |
 | `con_portal_https_port` | No | `443` | Port used for the controllers secured web interface. |
@@ -65,6 +66,7 @@ Requires Docker to be installed. We have created `avinetworks.docker` to install
 | `con_mounts_extras` | No | `[]` | Extra mounting points to be used by the controller. |
 | `con_env_variables_extras` | No | `[]` | Extra environment variables to be used by the controller. |
 | `con_ports_list_extras` | No | `[]` | Extra ports to be used by the controller. |
+| `con_force_deploy` | No | `false` | Forces Ansible to run on the host, does not skip tasks. |
 
 ### CSP Deployment Variables
 These are only marked required, for when you are using CSP Deployment.
@@ -85,7 +87,7 @@ These are only marked required, for when you are using CSP Deployment.
 | `con_csp_hsm_mask` | No | `None` | |
 | `con_csp_hsm_static_routes` | No | `None` | |
 | `con_csp_hsm_vnic_id` | No | `None` | |
-| `con_csp_bond_ifs` | No | `None` | |
+| `con_csp_bond_ifs` | No | `None` | Bonds the listed interfaces together. Ex. '1,2 3,4' bonds 1 with 2, and 3 with 4 |
 
 ### Parameter Override Variables
 However, you are able to provide these parameters another way. Using the following variables. This will allow the user to customize all values.  
@@ -170,6 +172,7 @@ When running. `gather_facts` needs to be set to `false`, failure to do so will c
           type: access
           tagged: 'false'
           network_name: enp1s0f0
+      con_csp_bond_ifs: '1,2'
 ```
 
 

@@ -53,4 +53,4 @@
 
     - name: Avi Controller | Docker | Install the Avi Controller services
       include: services/install.yml
-  when: not avi_installed.stat.exists or con_force_deploy
+  when: not avi_installed.stat.exists or con_force_deploy or con_fresh_install
