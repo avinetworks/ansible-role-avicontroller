@@ -121,7 +121,7 @@ con_ports_list_default:
   - "{{ con_portal_https_port }}:{{ con_portal_https_port }}"
   - "{{ con_sysint_port }}:{{ con_sysint_port }}"
   - "{{ con_cli_port }}:{{ con_cli_port }}"
-  - "{{ con_snmp_port }}:{{ con_snmp_port }}"
+  - "{{ con_snmp_port }}:{{ con_snmp_port }}/udp"
 con_ports_list_all: "{{ con_ports_list_extras + con_ports_list_default }}"
 con_ports_list_string: "{% for port in con_ports_list_all|reject('match', '^$') %} -p {{ port }}{% endfor %}"
 
