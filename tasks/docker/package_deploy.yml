@@ -5,6 +5,7 @@
 
 - name: Avi Controller | Docker | Load the image from the package
   shell: "docker load -q -i {{ con_package_dest }} | awk -F':' '{print $3}'"
+  changed_when: false
   register: con_load_docker_image
 
 - set_fact:
