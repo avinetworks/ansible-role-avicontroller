@@ -54,11 +54,13 @@
 
 - name: Avi Controller | Requirements | Get disk space on controller logs disk path
   shell: "df {{ con_logs_disk_path }} -BG | grep -iv Used | awk '{print $4}' | sed s/G//g"
+  changed_when: false
   register: con_logs_disk_path_space
   when: con_logs_disk_path != None
 
 - name: Avi Controller | Requirements | Get disk space on controller metrics disk path
   shell: "df {{ con_metrics_disk_path }} -BG | grep -iv Used | awk '{print $4}' | sed s/G//g"
+  changed_when: false
   register: con_metrics_disk_path_space
   when: con_metrics_disk_path != None
 
