@@ -124,9 +124,6 @@ For more information please visit [https://kb.avinetworks.com/avi-controller-siz
 It is recommended you adjust these parameters based on the implementation desired.
 
 
-
-
-
 ### Docker Deployment Examples
 ```
 
@@ -174,7 +171,6 @@ When running. `gather_facts` needs to be set to `false`, failure to do so will c
           network_name: enp1s0f0
       con_csp_bond_ifs: '1,2'
 ```
-
 
 ## License
 
