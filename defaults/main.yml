@@ -16,7 +16,7 @@ con_package_dest: /tmp/controller_docker.tgz
 con_docker_repo: ~
 con_docker_repo_user: ~
 con_docker_repo_password: ~
-con_version: 16.4.4-9007-20170506.145733
+con_version: 17.2.4-9024-20171127.023607
 con_image: "avinetworks/controller:{{ con_version }}"
 
 # parameters for the CSP deployment
