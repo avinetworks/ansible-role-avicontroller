@@ -1,7 +1,7 @@
 ---
 - name: Avi Controller | Services | init.d | Set container env for non-systemd
   set_fact:
-    con_env_variables_extras: "{{ env_variables_extras + ['NON_SYSTEMD=1'] }}"
+    con_env_variables_extras: "{{ con_env_variables_extras + ['NON_SYSTEMD=1'] }}"
 
 - block:
     - name: Avi Controller | Services | init.d | Deploy the avicontroller service
