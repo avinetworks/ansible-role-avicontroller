@@ -34,7 +34,7 @@ Requires Docker to be installed. We have created `avinetworks.docker` to install
 | Variable | Required | Default | Comments |
 |----------|----------|---------|----------|
 | `con_docker_repo` | No | `None` | If using a local repository please enter it here. |
-| `con_version` | No | `16.4.4-9007-20170506.145733` | Version of the Avi Controller package you want to deploy. |
+| `con_version` | No | `17.2.4-9024-20171127.023607` | Version of the Avi Controller package you want to deploy. |
 | `con_image` | No | `avinetworks/controller:{{ con_version }}` | Full name of the controller image. |
 | `con_docker_repo_user` | No | `None` | User to be used for repository authentication. |
 | `con_docker_repo_password` | No | `None` | Password to be used for repository authentication. |
