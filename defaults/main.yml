@@ -19,36 +19,6 @@ con_docker_repo_password: ~
 con_version: 17.2.4-9024-20171127.023607
 con_image: "avinetworks/controller:{{ con_version }}"
 
-# parameters for the CSP deployment
-con_csp_user: ~
-con_csp_password: ~
-con_csp_qcow_image_file: controller.qcow
-con_csp_qcow_image_name: "{{ con_csp_qcow_image_file|basename }}"
-con_csp_mgmt_ip: ~
-con_csp_mgmt_mask: ~
-con_csp_default_gw: ~
-con_csp_disk_size: 64
-con_csp_service_name: avi-controller
-con_csp_metafile_name: avi_meta_{{ con_csp_service_name }}.yml
-con_csp_num_cpu: 4
-con_csp_memory_gb: 16
-con_csp_memory_mb: "{{ con_csp_memory_gb|int * 1024 }}"
-con_csp_vnics:
-  - nic: '0'
-    type: access
-    tagged: 'false'
-    network_name: enp1s0f0
-con_csp_meta_config: {}
-con_csp_meta_options:
-  avi.mgmt-ip.CONTROLLER: "{{ con_csp_mgmt_ip | default(None) }}"
-  avi.default-gw.CONTROLLER: "{{ con_csp_default_gw | default(None) }}"
-  avi.mgmt-mask.CONTROLLER: "{{ con_csp_mgmt_mask | default(None) }}"
-  avi.hsm-ip.CONTROLLER: "{{ con_csp_hsm_ip | default(None) }}"
-  avi.hsm-mask.CONTROLLER: "{{ con_csp_hsm_mask | default(None) }}"
-  avi.hsm-static-routes.CONTROLLER: "{{ con_csp_hsm_static_routes | default(None) }}"
-  avi.hsm-vnic-id.CONTROLLER: "{{ con_csp_hsm_vnic_id | default(None) }}"
-  avi.bond-ifs.CONTROLLER: "{{ con_csp_bond_ifs | default(None) }}"
-
 # docker deployment parameters
 con_force_deploy: false
 con_new_service: false
