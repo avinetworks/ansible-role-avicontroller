@@ -11,7 +11,7 @@
 - block:
     - name: Avi Controller | Services | Install the Avi Controller service file | New
       template: src=avicontroller.j2 dest=/usr/sbin/avicontroller mode=0755
-      notify: Avi Controller | Services | Restart the avise service
+      notify: Avi Controller | Services | Restart the avicontroller service
     - name: Avi Controller | Services | {{ ansible_service_mgr }} | Install the Avi Controller service | New
       include: "{{ ansible_service_mgr }}/install.yml"
   when: con_new_service
