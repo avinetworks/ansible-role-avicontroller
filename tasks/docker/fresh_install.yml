@@ -10,6 +10,7 @@
 - name: Avi Controller | Requirements | systemd | Stop the avicontroller service for fresh install
   systemd: daemon_reload=yes name=avicontroller enabled=no state=stopped
   when: ansible_service_mgr == 'systemd'
+  ignore_errors: true
 
 - name: Avi Controller | Requirements | upstart | Stop the avicontroller service for fresh install
   service: name=avicontroller enabled=no state=stopped

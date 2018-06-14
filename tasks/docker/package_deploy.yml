@@ -1,13 +1,21 @@
 ---
 # This set of tasks is only used when con_package_deploy is true
+
+- name: Avi Controller | Docker | Copy Image Details
+  debug: msg="{{con_package_source}}"
+
 - name: Avi Controller | Docker | Deploy the image from the package
   copy: src={{ con_package_source }} dest={{ con_package_dest }}
 
 - name: Avi Controller | Docker | Load the image from the package
-  shell: "docker load -q -i {{ con_package_dest }} | awk -F':' '{print $3}'"
+  shell: "docker load -i {{ con_package_dest }} | awk -F':' '{print $3}'"
   changed_when: false
   register: con_load_docker_image
 
-- set_fact:
+- name: Avi Controller | Docker | Avi image from the package
+  debug: msg="{{con_load_docker_image.stdout}}"
+
+- name: Avi Controller | Docker | Set Avi image and version
+  set_fact:
     con_version: "{{ con_load_docker_image.stdout }}"
     con_image: "avinetworks/controller:{{ con_load_docker_image.stdout }}"
