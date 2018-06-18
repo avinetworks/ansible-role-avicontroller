@@ -5,6 +5,15 @@
   register: docker
   changed_when: false
 
+- name: Avi Controller | Requirements | Get docker version
+  shell: "docker -v | cut -d ' ' -f 3 | cut -d ',' -f 1"
+  register: docker_version
+
+- name: Avi Controller | Requirements | Check docker version
+  assert:
+    that:
+      - docker_version.stdout | version_compare('1.10.2', '>=')
+
 - name: Avi Controller | Requirements | Verify con_version not "latest"
   assert:
     that:
