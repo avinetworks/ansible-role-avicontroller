@@ -8,6 +8,7 @@
 - name: Avi Controller | Requirements | Get docker version
   shell: "docker -v | cut -d ' ' -f 3 | cut -d ',' -f 1"
   register: docker_version
+  changed_when: false
 
 - name: Avi Controller | Requirements | Check docker version
   assert:
@@ -29,10 +30,14 @@
       con_dev_name: "{{ con_mgmt_device.stdout }}"
   when: con_dev_name == None
 
-- name: Avi Controller | Requirements | Set facts
+- name: Avi Controller | Requirements | Set max_cores and memory limits of environment
   set_fact:
-    con_max_cores: "{{ ansible_processor_cores * ansible_processor_count }}"
+    con_max_cores: "{{ ansible_processor_cores * ansible_processor_count * ansible_processor_threads_per_core}}"
     con_ansible_memtotal_gb: "{{ ansible_memtotal_mb // 1024 }}"
+
+- name: Avi Controller | Requirements | Get Ansible processor info
+  debug: msg="con_max_cores {{con_max_cores}} ansible processor cores {{ ansible_processor_cores }} count {{ansible_processor_count}} threads {{ansible_processor_threads_per_core}}"
+  when: not con_skip_requirements
 
 - name: Avi Controller | Requirements | Validate Parameters
   assert:
