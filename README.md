@@ -94,6 +94,35 @@ The following is an example with minimum parameters.
     - role: avinetworks.avicontroller
 ```
 
+The following is an example with specific 18.1.2 release
+
+```yaml
+
+---
+- hosts: bm
+  vars:
+    avi_con_version: 18.1.2-9058-20180623.025526
+  tasks:
+    - name: Avi Controller | Setup docker
+      include_role:
+        name: avinetworks.docker
+      become: yes
+    - name: Avi Controller | Setup Controller
+      include_role:
+        name: avinetworks.avicontroller
+      vars:
+        con_controller_ip: "xxx"
+        con_memory_gb: 20
+        con_cores: 4|int
+        con_fresh_install: True
+        con_package_deploy: False
+        con_version: "{{avi_con_version}}"
+        con_image: avinetworks/controller:{{ con_version }}
+        con_disk_gb: 50
+
+```
+
+
 ## License
 
 BSD
