@@ -125,9 +125,8 @@ The following is an example with specific 18.1.2 release
 
 ## License
 
-BSD
+Apache 2.0
 
 ## Author Information
 
-Eric Anderson  
 [Avi Networks](http://avinetworks.com)
