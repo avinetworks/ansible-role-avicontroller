@@ -1,0 +1,31 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: gce
+  ssh_connection_options:
+    - -o ControlPath=~/.ansible/cp/%r@%h-%p
+lint:
+  name: yamllint
+  options:
+    config-file: molecule/default/.yamllint
+platforms:
+  - name: avicontroller-debian-8-test
+    zone: us-west1-b
+    machine_type: n1-standard-4
+    image: debian-8
+    disk_size: 80
+provisioner:
+  name: ansible
+  lint:
+    name: ansible-lint
+  playbooks:
+    create: gce/create.yml
+    verify: gce/verify.yml
+    destroy: gce/destroy.yml
+scenario:
+  name: default
+verifier:
+  name: testinfra
+  lint:
+    name: flake8
