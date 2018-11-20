@@ -1,0 +1,29 @@
+---
+dist: trusty
+sudo: required
+language: python
+services:
+  - docker
+
+before_install:
+  - sudo apt-get -qq update
+
+env:
+  global:
+    - ROLE_NAME: avicontroller
+  matrix:
+    - MOLECULE_IMAGE: debian-8
+
+install:
+  - pip install molecule docker
+
+before_script:
+  - cd ../
+  - mv ansible-role-$ROLE_NAME avinetworks.$ROLE_NAME
+  - cd avinetworks.$ROLE_NAME
+
+script:
+  - molecule test
+
+notifications:
+  webhooks: https://galaxy.ansible.com/api/v1/notifications/

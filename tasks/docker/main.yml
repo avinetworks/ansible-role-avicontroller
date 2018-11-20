@@ -9,13 +9,19 @@
 
 - block:
     - name: Avi Controller | Check minimum requirements
-      include: requirements.yml
+      include: con_requirements.yml
 
     - name: Avi Controller | Perform specific os tasks
-      include: os/{{ ansible_distribution|lower }}.yml
+      include: "{{ item }}"
+      with_first_found:
+        - os/{{ ansible_distribution|lower }}.yml
+        - os/default.yml
 
     - name: Avi Controller | Perform specific os family tasks
-      include: family/{{ ansible_os_family|lower }}.yml
+      include: "{{ item }}"
+      with_first_found:
+        - family/{{ ansible_os_family|lower }}.yml
+        - family/default.yml
 
     - name: Avi Controller | Copy setup.json to controller
       copy: src="{{ con_setup_json }}" dest="{{ con_disk_path }}/setup.json"
