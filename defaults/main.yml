@@ -59,6 +59,7 @@ con_snmp_port: 161
 con_mounts_extras: []
 con_mounts_default:
   - "/:/hostroot/"
+  - "/dev:/dev"
   - "/var/run/docker.sock:/var/run/docker.sock"
   - "{{ (con_deploy_type|lower == 'openshift')| ternary('', '/var/run/fleet.sock:/var/run/fleet.sock') }}"
   - "{{ con_disk_path }}:/vol/"
