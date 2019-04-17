@@ -7,9 +7,13 @@
   when: ansible_service_mgr == 'init' or
         ( ansible_service_mgr != 'systemd' and not con_new_service )
 
+- name: Avi Controller | Requirements | systemd | Check the avicontroller service exist
+  stat: path=/etc/systemd/system/avicontroller.service
+  register: service_status
+
 - name: Avi Controller | Requirements | systemd | Stop the avicontroller service for fresh install
   systemd: daemon_reload=yes name=avicontroller enabled=no state=stopped
-  when: ansible_service_mgr == 'systemd'
+  when: ansible_service_mgr == 'systemd' and service_status.stat.exists
 
 - name: Avi Controller | Requirements | upstart | Stop the avicontroller service for fresh install
   service: name=avicontroller enabled=no state=stopped
