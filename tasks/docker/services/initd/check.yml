@@ -1,5 +1,0 @@
----
-- name: Avi Controller | Check if Avi Controller installed
-  stat:
-    path: /etc/init.d/avicontroller
-  register: avi_installed

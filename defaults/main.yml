@@ -65,14 +65,14 @@ con_mounts_default:
   - "{{ con_disk_path }}:/vol/"
   - "{{ (con_metrics_disk_path == None)|ternary('', con_metrics_disk_path ~ ':/vol_metrics/') }}"
   - "{{ (con_logs_disk_path == None)|ternary('', con_logs_disk_path ~ ':/vol_logs/') }}"
-con_mounts_all: "{{ con_mounts_extras + con_mounts_default}}"
+con_mounts_all: "{{ con_mounts_extras + con_mounts_default }}"
 con_mounts_string: "{% for mount_var in con_mounts_all|reject('match', '^$') %} -v {{ mount_var }}{% endfor %}"
 
 # Environment variables which are sent to the docker container, these are used in the service templates.
 con_env_variables_extras: []
 con_env_variables_default:
   - "CONTAINER_NAME=avicontroller"
-  - "MANAGEMENT_IP={{ con_controller_ip|string}}"
+  - "MANAGEMENT_IP={{ con_controller_ip|string }}"
   - "NUM_CPU={{ con_cores }}"
   - "NUM_MEMG={{ con_memory_gb }}"
   - "DISK_GB={{ con_disk_gb }}"

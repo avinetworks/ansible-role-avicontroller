@@ -52,7 +52,7 @@
 
     - name: Avi Controller | Set service facts for deploy
       set_fact:
-        con_new_service: "{{ con_version|version_compare('19.1.1', '>=') }}"
+        con_new_service: "{{ con_version is version_compare('19.1.1', '>=') }}"
 
     - name: Avi Controller | Docker | Cleanup
       include: services/cleanup.yml

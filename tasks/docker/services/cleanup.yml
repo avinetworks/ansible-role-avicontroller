@@ -30,4 +30,4 @@
 - name: Avi Controller | Docker | Cleanup | Remove non-matched controller images.
   shell: "docker rmi -f {{ con_non_matched_images.stdout_lines|join(' ') }}"
   changed_when: false
-  when: con_non_matched_images.stdout != ""
+  when: con_non_matched_images.stdout
