@@ -1,7 +1,7 @@
 ---
 # check system against minimum requirements
 - name: Avi Controller | Requirements | Check for docker
-  shell: "which docker"
+  command: "which docker"
   register: docker
   changed_when: false
 
