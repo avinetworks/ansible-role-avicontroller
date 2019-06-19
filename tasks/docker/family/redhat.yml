@@ -1,7 +1,7 @@
 ---
 # Verify if firewalld service is installed/present
 - name: Avi Controller | Docker | Family | Verify Firewalld is present
-  command: systemctl is-enabled firewalld
+  command: systemctl is-enabled firewalld # noqa 303
   register: result
   failed_when: false
   changed_when: false
@@ -13,7 +13,7 @@
 
 # Verify if snmpd service is installed/present and enable
 - name: Avi Controller | Docker | Family | Verify snmpd is present
-  command: systemctl is-enabled snmpd
+  command: systemctl is-enabled snmpd # noqa 303
   register: snmpd_result
   failed_when: false
   changed_when: false
