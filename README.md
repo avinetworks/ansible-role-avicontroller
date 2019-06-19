@@ -83,18 +83,22 @@ Requires Docker to be installed. We have created `avinetworks.docker` to install
 
 ### Docker Deployment Examples
 
-    - hosts: servers
-      roles:
-        - role: avinetworks.avicontroller
-          con_controller_ip: 10.10.27.101
-          con_cores: 4                     # If not specified core count is 4
-          con_memory_gb: 12                 # If not specified memory count is 12
+```yaml
+- hosts: servers
+  roles:
+    - role: avinetworks.avicontroller
+      con_controller_ip: 10.10.27.101
+      con_cores: 4                     # If not specified core count is 4
+      con_memory_gb: 12                 # If not specified memory count is 12
+```
 
 The following is an example with minimum parameters.
 
-    - hosts: servers
-      roles:
-        - role: avinetworks.avicontroller
+```yaml
+- hosts: servers
+  roles:
+    - role: avinetworks.avicontroller
+```
 
 The following is an example with specific 18.1.2 release
 
