@@ -6,6 +6,3 @@
 
 - name: Avi Controller | Services | Restart the avicontroller service
   service: name=avicontroller enabled=yes state=restarted
-
-- name: Avi Controller | Services | init.d | Restart the avicontroller_watcher service
-  service: name=avicontroller_watcher enabled=yes state=restarted
