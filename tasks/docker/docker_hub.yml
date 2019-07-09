@@ -6,4 +6,4 @@
   register: con_load_docker_hub
   changed_when: "'Status: Image is up to date' not in con_load_docker_hub.stdout"
   notify: Avi Controller | Services | Restart the avicontroller service
-  when: con_docker_match.stdout == "" or con_version == "latest"
+  when: not con_docker_match.stdout or con_version == "latest"

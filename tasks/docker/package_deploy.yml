@@ -8,6 +8,7 @@
   changed_when: false
   register: con_load_docker_image
 
-- set_fact:
+- name: Set con_version and con_image facts
+  set_fact:
     con_version: "{{ con_load_docker_image.stdout }}"
     con_image: "avinetworks/controller:{{ con_load_docker_image.stdout }}"
