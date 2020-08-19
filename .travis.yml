@@ -1,21 +1,25 @@
 ---
 language: python
-services:
-  - docker
+services: docker
 
-before_install:
-  - sudo apt-get -qq update
+# Ensure pip is present
+addons:
+  apt:
+    packages:
+    - python-pip
+
+install:
+  # Install required packages
+  - pip install molecule yamllint ansible-lint flake8 testinfra docker
 
 env:
   global:
     - ROLE_NAME: avicontroller
   matrix:
-    - MOLECULE_DISTRO: centos:7
+    - MOLECULE_DISTRO: centos:8
       MOLECULE_SERVICE_MANAGER: systemd
       MOLECULE_COMMAND: /usr/sbin/init
 
-install:
-  - pip install testinfra molecule docker
 
 before_script:
   - cd ../
