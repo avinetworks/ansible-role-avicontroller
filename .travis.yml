@@ -2,6 +2,8 @@
 language: python
 services: docker
 
+python: "3.7"
+
 # Ensure pip is present
 addons:
   apt:
@@ -10,7 +12,7 @@ addons:
 
 install:
   # Install required packages
-  - pip install molecule yamllint ansible-lint flake8 testinfra docker
+  - pip install molecule yamllint ansible-lint flake8 testinfra docker molecule-docker
 
 env:
   global:
