@@ -12,7 +12,7 @@ addons:
 
 install:
   # Install required packages
-  - pip install molecule yamllint ansible-lint flake8 testinfra docker molecule-docker
+  - pip install ansible molecule yamllint ansible-lint flake8 testinfra docker molecule-docker
 
 env:
   global:
