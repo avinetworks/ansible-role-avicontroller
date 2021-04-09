@@ -8,4 +8,3 @@
   notify:
     - Avi Controller | Services | systemd | Daemon reload
     - Avi Controller | Services | Restart the avicontroller service
-
