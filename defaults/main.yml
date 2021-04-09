@@ -21,7 +21,6 @@ con_image: "avinetworks/controller:{{ con_version }}"
 
 # docker deployment parameters
 con_force_deploy: false
-con_new_service: false
 con_fresh_install: false
 con_controller_ip: "{{ ansible_default_ipv4.address }}"
 con_cores: "{{ ansible_processor_cores * ansible_processor_count }}"
