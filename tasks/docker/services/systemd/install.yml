@@ -8,15 +8,3 @@
   notify:
     - Avi Controller | Services | systemd | Daemon reload
     - Avi Controller | Services | Restart the avicontroller service
-  when: not con_new_service
-
-- name: Avi Controller | Services | systemd | Deploy the avicontroller service | New Service
-  copy:
-    src: systemd/avicontroller.service
-    dest: /etc/systemd/system/avicontroller.service
-    mode: 0644
-  register: avicontroller_service
-  notify:
-    - Avi Controller | Services | systemd | Daemon reload
-    - Avi Controller | Services | Restart the avicontroller service
-  when: con_new_service

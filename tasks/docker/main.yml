@@ -46,10 +46,6 @@
           when: con_docker_repo != None
       when: not con_package_deploy
 
-    - name: Avi Controller | Set service facts for deploy
-      set_fact:
-        con_new_service: "{{ con_version is version_compare('19.1.1', '>=') }}"
-
     - name: Avi Controller | Docker | Cleanup
       include: services/cleanup.yml
 
