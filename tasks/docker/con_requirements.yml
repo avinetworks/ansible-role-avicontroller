@@ -28,6 +28,7 @@
     - name: Avi Controller | Requirements | Set the management device name | ip addr
       set_fact:
         con_dev_name: "{{ con_mgmt_device.stdout }}"
+        AVICONTROLLER_DEV_NAME: "{{ con_mgmt_device.stdout }}"
   when: con_dev_name == None
 
 - name: Avi Controller | Requirements | Set max_cores and memory limits of environment
